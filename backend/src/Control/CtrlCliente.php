@@ -36,4 +36,18 @@ class CtrlCliente {
             throw new Exception("Ocorreu um erro ao registar o cliente na base de dados.");
         }
     }
+
+    /*Método para controlar a consulta de clientes*/
+    public function buscarTodos($filtros = []) {
+        try {
+            $clientes = Cliente::listar($filtros);
+            return [
+                'sucesso' => true,
+                'dados' => $clientes
+            ];
+        } catch (Exception $e) {
+            throw new Exception("Ocorreu um erro ao listar os clientes.");
+        }
+    }
+
 }

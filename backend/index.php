@@ -6,6 +6,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Boundary\ApiCliente;
 use Boundary\ApiTabelaPrecos;
 use Boundary\ApiCor;
+use Boundary\ApiPedido;
 
 // Obtém o caminho da URL acessada
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -24,6 +25,10 @@ if (strpos($uri, '/api/clientes') !== false) {
     
     $apiCor = new ApiCor();
     $apiCor->processarRequisicao();
+
+} elseif (strpos($uri, '/api/pedidos') !== false) {
+    $apiPedido = new ApiPedido();
+    $apiPedido->processarRequisicao();
 
 } else {
     // Rota não encontrada
