@@ -2,7 +2,9 @@
     "name": "crgue/backend",
     "autoload": {
         "psr-4": {
-            "Crgue\\Backend\\": "src/"
+            "Entity\\": "src/Entity/",
+            "Control\\": "src/Control/",
+            "Boundary\\": "src/Boundary/"
         }
     },
     "authors": [

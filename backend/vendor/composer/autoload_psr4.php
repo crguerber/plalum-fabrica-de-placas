@@ -6,5 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Crgue\\Backend\\' => array($baseDir . '/src'),
+    'Entity\\' => array($baseDir . '/src/Entity'),
+    'Control\\' => array($baseDir . '/src/Control'),
+    'Boundary\\' => array($baseDir . '/src/Boundary'),
 );
