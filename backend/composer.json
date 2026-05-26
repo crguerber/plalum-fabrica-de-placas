@@ -1,0 +1,15 @@
+{
+    "name": "crgue/backend",
+    "autoload": {
+        "psr-4": {
+            "Crgue\\Backend\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Carlos Rafael Guerber",
+            "email": "crguerber@gmail.com"
+        }
+    ],
+    "require": {}
+}
