@@ -33,4 +33,17 @@ class CtrlCor {
             throw new Exception("Ocorreu um erro ao registar a cor na base de dados.");
         }
     }
+
+    /*Método para controlar a consulta*/
+    public function buscarTodos($filtros = []) {
+        try {
+            $cores = Cor::listar($filtros);
+            return [
+                'sucesso' => true,
+                'dados' => $cores
+            ];
+        } catch (Exception $e) {
+            throw new Exception("Ocorreu um erro ao listar as cores.");
+        }
+    }
 }

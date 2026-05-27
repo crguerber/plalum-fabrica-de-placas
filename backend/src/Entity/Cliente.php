@@ -4,6 +4,7 @@ namespace Entity;
 
 use PDO;
 use PDOException;
+use Exception;
 
 class Cliente {
     private $idCliente;
@@ -11,20 +12,25 @@ class Cliente {
     private $cpf;
     private $telefone;
     private $email;
+    private $ativo;
 
-    public function __construct($nome = null, $cpf = null, $telefone = null, $email = null) {
+    public function __construct($nome = null, $cpf = null, $telefone = null, $email = null, $ativo = 1) {
         $this->nome = $nome;
         $this->cpf = $cpf;
         $this->telefone = $telefone;
         $this->email = $email;
+        $this->ativo = $ativo;
     }
 
     // Métodos de Acesso (Getters)
     public function getIdCliente() { return $this->idCliente; }
+    
     public function getNome() { return $this->nome; }
     public function getCpf() { return $this->cpf; }
     public function getTelefone() { return $this->telefone; }
     public function getEmail() { return $this->email; }
+    public function getAtivo() { return $this->ativo; }
+    
 
     // Métodos de Modificação (Setters)
     public function setIdCliente($id) { $this->idCliente = $id; }
@@ -32,6 +38,7 @@ class Cliente {
     public function setCpf($cpf) { $this->cpf = $cpf; }
     public function setTelefone($telefone) { $this->telefone = $telefone; }
     public function setEmail($email) { $this->email = $email; }
+    public function setAtivo($ativo) { $this->ativo = $ativo; }
 
     /**
      * Método para inserir o cliente na base de dados.
@@ -85,6 +92,36 @@ class Cliente {
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new Exception("Erro ao buscar os clientes: " . $e->getMessage());
+        }
+    }
+
+    /*Método para alterar*/
+    public function atualizar() {
+        try {
+            $conexao = Conexao::getConexao();
+            $sql = "UPDATE Cliente SET nome = ?, cpf = ?, telefone = ?, email = ? WHERE idCliente = ?";
+            $stmt = $conexao->prepare($sql);
+            return $stmt->execute([
+                $this->nome,
+                $this->cpf,
+                $this->telefone,
+                $this->email,
+                $this->idCliente
+            ]);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao atualizar o cliente: " . $e->getMessage());
+        }
+    }
+
+    /*Método para mudar situação*/
+    public static function alterarStatus($idCliente, $ativo) {
+        try {
+            $conexao = Conexao::getConexao();
+            $sql = "UPDATE Cliente SET ativo = ? WHERE idCliente = ?";
+            $stmt = $conexao->prepare($sql);
+            return $stmt->execute([$ativo, $idCliente]);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao alterar o status: " . $e->getMessage());
         }
     }
 

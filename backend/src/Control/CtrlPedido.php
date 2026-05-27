@@ -106,4 +106,18 @@ class CtrlPedido {
             throw new Exception("Erro ao processar o pedido: " . $e->getMessage());
         }
     }
+
+    /*Método para controlar a consulta*/
+    public function buscarTodos($filtros = []) {
+        try {
+            $pedidos = Pedido::listar($filtros);
+            return [
+                'sucesso' => true,
+                'dados' => $pedidos
+            ];
+        } catch (Exception $e) {
+            throw new Exception("Ocorreu um erro ao listar os pedidos.");
+        }
+    }
+    
 }

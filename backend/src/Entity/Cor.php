@@ -36,4 +36,30 @@ class Cor {
             die("Erro ao inserir a cor: " . $e->getMessage());
         }
     }
+
+    /*Método para listar*/
+    public static function listar($filtros = []) {
+        try {
+            $conexao = Conexao::getConexao();
+            $sql = "SELECT idCor, nome, tipo FROM Cor WHERE 1=1";
+            $parametros = [];
+
+            if (!empty($filtros['nome'])) {
+                $sql .= " AND nome LIKE ?";
+                $parametros[] = "%" . $filtros['nome'] . "%";
+            }
+
+            if (!empty($filtros['tipo'])) {
+                $sql .= " AND tipo = ?";
+                $parametros[] = $filtros['tipo'];
+            }
+
+            $sql .= " ORDER BY nome ASC";
+            $stmt = $conexao->prepare($sql);
+            $stmt->execute($parametros);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar as cores: " . $e->getMessage());
+        }
+    }
 }

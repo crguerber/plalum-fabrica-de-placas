@@ -50,4 +50,44 @@ class CtrlCliente {
         }
     }
 
+    /*Método para controlar a atualização*/
+    public function atualizarCliente($dados) {
+        if (empty($dados['idCliente']) || empty($dados['nome']) || empty($dados['cpf'])) {
+            throw new Exception("O identificador do cliente, nome e CPF são de preenchimento obrigatório para a atualização.");
+        }
+        
+        $cliente = new Cliente(
+            $dados['nome'],
+            $dados['cpf'],
+            $dados['telefone'] ?? null,
+            $dados['email'] ?? null
+        );
+        $cliente->setIdCliente($dados['idCliente']);
+        
+        if ($cliente->atualizar()) {
+            return [
+                'sucesso' => true,
+                'mensagem' => 'Dados do cliente atualizados com sucesso.'
+            ];
+        } else {
+            throw new Exception("Ocorreu um erro ao atualizar o registro no banco de dados.");
+        }
+    }
+
+    /*Método para controlar a altearação de situação*/
+    public function alterarStatusCliente($dados) {
+        if (empty($dados['idCliente']) || !isset($dados['ativo'])) {
+            throw new Exception("O identificador do cliente e o novo status são obrigatórios.");
+        }
+        
+        if (Cliente::alterarStatus($dados['idCliente'], $dados['ativo'])) {
+            return [
+                'sucesso' => true,
+                'mensagem' => 'Status do cliente modificado com sucesso.'
+            ];
+        } else {
+            throw new Exception("Ocorreu um erro ao alterar o status no banco de dados.");
+        }
+    }
+
 }

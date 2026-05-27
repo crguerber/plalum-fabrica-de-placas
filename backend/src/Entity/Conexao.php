@@ -5,6 +5,7 @@ namespace Entity;
 use PDO;
 use PDOException;
 
+
 class Conexao {
     // Variável estática para guardar a instância única da conexão
     private static $instancia;
@@ -18,6 +19,7 @@ class Conexao {
         if (!isset(self::$instancia)) {
             
             // Credenciais do Banco de Dados
+            $host = 'localhost';
             $dbname = 'plalum_db';
             $usuario = 'root';
             $senha = 'core2duo@20153010'; 

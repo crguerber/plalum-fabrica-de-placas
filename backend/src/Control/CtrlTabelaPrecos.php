@@ -48,4 +48,61 @@ class CtrlTabelaPrecos {
             throw new Exception("Ocorreu um erro ao registar a tabela de preços na base de dados.");
         }
     }
+
+    /*Método para controlar a consulta*/
+    public function buscarTodos($filtros = []) {
+        try {
+            $tabelas = TabelaPrecos::listar($filtros);
+            return [
+                'sucesso' => true,
+                'dados' => $tabelas
+            ];
+        } catch (Exception $e) {
+            throw new Exception("Ocorreu um erro ao listar as tabelas de preços.");
+        }
+    }
+
+    /*Método para controlar a edição*/
+    public function atualizarTabelaPrecos($dados) {
+        if (empty($dados['idTabelaPrecos']) || empty($dados['dataVigencia']) || !isset($dados['precoMaterial']) || !isset($dados['precoLetra'])) {
+            throw new Exception("O identificador, a data de vigência e os preços são obrigatórios para a atualização.");
+        }
+        
+        if (!is_numeric($dados['precoMaterial']) || $dados['precoMaterial'] <= 0 || 
+            !is_numeric($dados['precoLetra']) || $dados['precoLetra'] <= 0) {
+            throw new Exception("Os preços do material e da letra devem ser numéricos e positivos.");
+        }
+        
+        $tabela = new TabelaPrecos(
+            $dados['dataVigencia'],
+            $dados['precoMaterial'],
+            $dados['precoLetra']
+        );
+        $tabela->setIdTabelaPrecos($dados['idTabelaPrecos']);
+        
+        if ($tabela->atualizar()) {
+            return [
+                'sucesso' => true,
+                'mensagem' => 'Tabela de preços atualizada com sucesso.'
+            ];
+        } else {
+            throw new Exception("Ocorreu um erro ao atualizar o registo na base de dados.");
+        }
+    }
+
+    /*Método para controlar a alteração da situação*/
+    public function alterarStatusTabelaPrecos($dados) {
+        if (empty($dados['idTabelaPrecos']) || !isset($dados['ativo'])) {
+            throw new Exception("O identificador e o novo status são obrigatórios.");
+        }
+        
+        if (TabelaPrecos::alterarStatus($dados['idTabelaPrecos'], $dados['ativo'])) {
+            return [
+                'sucesso' => true,
+                'mensagem' => 'Status da tabela de preços modificado com sucesso.'
+            ];
+        } else {
+            throw new Exception("Ocorreu um erro ao alterar o status na base de dados.");
+        }
+    }
 }
