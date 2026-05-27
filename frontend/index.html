@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="cabecalho">
+        <div class="logotipo-container">
+            <img src="logo-placeholder.png" alt="Logotipo" class="logo-img">
+            <span class="logotipo-texto">Plalum</span>
+        </div>
+        <div class="controles">
+            <div class="tema-controle" title="Alternar Modo Escuro">
+                <span class="tema-label">Modo</span>
+                <label class="switch-tema">
+                    <input type="checkbox" id="checkboxTema">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <button id="btnMenu" class="btn-icone menu-mobile" aria-label="Menu">☰</button>
+            <button id="btnPerfil" class="btn-icone" aria-label="Perfil do Usuário" title="Iniciar Sessão">👤</button>
+        </div>
+        <nav id="navegacao" class="navegacao">
+            <button class="btn-nav" onclick="carregarVista('clientes')">Clientes</button>
+            <button class="btn-nav" onclick="carregarVista('tabelas')">Preços</button>
+            <button class="btn-nav" onclick="carregarVista('cores')">Cores</button>
+            <button class="btn-nav" onclick="carregarVista('pedidos')">Pedidos</button>
+        </nav>
+    </header>
+    <main id="conteudoPrincipal" class="conteudo">
+        <section id="vista-dashboard" class="vista-ativa">
+            <div class="cabecalho-dashboard">
+                <h2>Painel de Controle</h2>
+                <div class="abas">
+                    <button class="aba ativa" onclick="mudarAba('kanban', this)">Produção (Kanban)</button>
+                    <button class="aba" onclick="mudarAba('graficos', this)">Gráficos</button>
+                </div>
+            </div>
+            <div id="aba-kanban" class="conteudo-aba ativo">
+                <p>O quadro Kanban de produção será implementado aqui.</p>
+            </div>
+            <div id="aba-graficos" class="conteudo-aba">
+                <p>Os gráficos e estatísticas do sistema serão apresentados aqui.</p>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="rodape">
+        <p>&copy; 2026 - Plalum - Placas de alumínio. Todos os direitos reservados.</p>
+    </footer>
+    <script src="app.js?v=2"></script>
+</body>
+</html>

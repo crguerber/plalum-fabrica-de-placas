@@ -1,0 +1,259 @@
+:root {
+    --cor-fundo: #f4f4f9;
+    --cor-texto: #333333;
+    --cor-primaria: #0056b3;
+    --cor-secundaria: #ffffff;
+    --cor-borda: #cccccc;
+    --sombra: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+[data-theme="dark"] {
+    --cor-fundo: #1a1a1a;
+    --cor-texto: #e0e0e0;
+    --cor-primaria: #4da6ff;
+    --cor-secundaria: #2d2d2d;
+    --cor-borda: #404040;
+    --sombra: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.cabecalho {
+    background-color: var(--cor-secundaria);
+    padding: 1rem;
+    box-shadow: var(--sombra);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logotipo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo-img {
+    height: 40px;
+    width: 40px;
+    object-fit: contain;
+    background-color: var(--cor-borda);
+    border-radius: 50%;
+}
+
+.logotipo-texto {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--cor-primaria);
+}
+
+.controles {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.tema-controle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tema-label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--cor-texto);
+    display: none;
+}
+
+.switch-tema {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
+}
+
+.switch-tema input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--cor-borda);
+    transition: .3s ease-in-out;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--cor-secundaria);
+    transition: .3s ease-in-out;
+    border-radius: 50%;
+    box-shadow: var(--sombra);
+}
+
+input:checked + .slider {
+    background-color: var(--cor-primaria);
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+.btn-icone {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--cor-texto);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-mobile {
+    display: block;
+}
+
+.navegacao {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease-in-out, margin-top 0.3s ease-in-out;
+}
+
+.navegacao.ativa {
+    max-height: 300px;
+    margin-top: 1rem;
+}
+
+.btn-nav {
+    background-color: var(--cor-primaria);
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: left;
+    width: 100%;
+}
+
+.btn-nav:hover {
+    opacity: 0.9;
+}
+
+.conteudo {
+    flex: 1;
+    padding: 2rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.cabecalho-dashboard {
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--cor-borda);
+    padding-bottom: 0.5rem;
+}
+
+.abas {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    overflow-x: auto;
+}
+
+.aba {
+    background: none;
+    border: none;
+    color: var(--cor-texto);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-bottom: 3px solid transparent;
+    transition: border-color 0.3s ease, color 0.3s ease;
+    white-space: nowrap;
+}
+
+.aba.ativa {
+    border-bottom-color: var(--cor-primaria);
+    font-weight: bold;
+    color: var(--cor-primaria);
+}
+
+.conteudo-aba {
+    display: none;
+    background-color: var(--cor-secundaria);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--sombra);
+}
+
+.conteudo-aba.ativo {
+    display: block;
+}
+
+.rodape {
+    background-color: var(--cor-secundaria);
+    color: var(--cor-texto);
+    text-align: center;
+    padding: 1rem;
+    border-top: 1px solid var(--cor-borda);
+    font-size: 0.85rem;
+    margin-top: auto;
+}
+
+/* --- REGRAS DE MÍDIA PARA TELAS GRANDES (DESKTOP) --- */
+@media (min-width: 768px) {
+    .tema-label {
+        display: block;
+    }
+    
+    .menu-mobile {
+        display: none;
+    }
+    
+    .navegacao {
+        width: auto;
+        max-height: none;
+        flex-direction: row;
+        margin-top: 0;
+        overflow: visible;
+    }
+    
+    .btn-nav {
+        width: auto;
+    }
+}
