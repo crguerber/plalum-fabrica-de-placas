@@ -46,4 +46,48 @@ class CtrlCor {
             throw new Exception("Ocorreu um erro ao listar as cores.");
         }
     }
+
+    /*Método para controlar a atualização*/
+    public function atualizarCor($dados) {
+        if (empty($dados['idCor']) || empty($dados['nome']) || empty($dados['tipo'])) {
+            throw new Exception("O identificador, o nome e o tipo são obrigatórios para a atualização.");
+        }
+        
+        $tiposPermitidos = ['Fundo', 'Letra', 'Ambos'];
+        if (!in_array($dados['tipo'], $tiposPermitidos)) {
+            throw new Exception("O tipo da cor deve ser obrigatoriamente 'Fundo', 'Letra' ou 'Ambos'.");
+        }
+        
+        $cor = new Cor(
+            $dados['nome'],
+            $dados['tipo']
+        );
+        $cor->setIdCor($dados['idCor']);
+        
+        if ($cor->atualizar()) {
+            return [
+                'sucesso' => true,
+                'mensagem' => 'Cor atualizada com sucesso.'
+            ];
+        } else {
+            throw new Exception("Ocorreu um erro ao atualizar o registo na base de dados.");
+        }
+    }
+
+    /*Método para controlar a alteração de situação*/
+    public function alterarStatusCor($dados) {
+        if (empty($dados['idCor']) || !isset($dados['ativo'])) {
+            throw new Exception("O identificador e o novo status são obrigatórios.");
+        }
+        
+        if (Cor::alterarStatus($dados['idCor'], $dados['ativo'])) {
+            return [
+                'sucesso' => true,
+                'mensagem' => 'Status da cor modificado com sucesso.'
+            ];
+        } else {
+            throw new Exception("Ocorreu um erro ao alterar o status na base de dados.");
+        }
+    }
+
 }

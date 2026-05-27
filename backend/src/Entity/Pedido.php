@@ -14,6 +14,7 @@ class Pedido {
     private $valorTotal;
     private $valorSinal;
     private $situacao;
+    //private $ativo;
 
     public function __construct($idCliente = null, $dataPedido = null, $dataEntregaPrevista = null, $valorTotal = null, $valorSinal = null, $situacao = 'A') {
         $this->idCliente = $idCliente;
@@ -27,6 +28,7 @@ class Pedido {
     public function getIdPedido() { return $this->idPedido; }
     public function setIdPedido($id) { $this->idPedido = $id; }
 
+    /*Método de inserção de novos*/
     public function inserir($conexao) {
         $sql = "INSERT INTO Pedido (idCliente, dataPedido, data_entrega_prevista, valor_total, valor_sinal, situacao) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conexao->prepare($sql);
@@ -93,6 +95,18 @@ class Pedido {
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new Exception("Erro ao buscar os pedidos: " . $e->getMessage());
+        }
+    }
+
+    /*Método para alterar a situação A=Aberta, C=Cancelada, E=Entregue, Finalizado*/
+    public static function alterarSituacao($idPedido, $situacao) {
+        try {
+            $conexao = Conexao::getConexao();
+            $sql = "UPDATE Pedido SET situacao = ? WHERE idPedido = ?";
+            $stmt = $conexao->prepare($sql);
+            return $stmt->execute([$situacao, $idPedido]);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao alterar a situação do pedido: " . $e->getMessage());
         }
     }
     

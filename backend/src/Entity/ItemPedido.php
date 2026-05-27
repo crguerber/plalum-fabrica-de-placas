@@ -3,6 +3,8 @@
 namespace Entity;
 
 use PDO;
+use PDOException;
+use Exception;
 
 class ItemPedido {
     private $idItemPedido;

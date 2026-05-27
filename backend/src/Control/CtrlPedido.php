@@ -119,5 +119,26 @@ class CtrlPedido {
             throw new Exception("Ocorreu um erro ao listar os pedidos.");
         }
     }
+
+    /*Método para controlar a alteração da situação do pedido*/
+    public function alterarSituacaoPedido($dados) {
+        if (empty($dados['idPedido']) || empty($dados['situacao'])) {
+            throw new Exception("O identificador do pedido e a nova situação são obrigatórios.");
+        }
+        
+        $situacoesPermitidas = ['A', 'C', 'E', 'F'];
+        if (!in_array($dados['situacao'], $situacoesPermitidas)) {
+            throw new Exception("A situação deve ser obrigatoriamente 'A' (Aberto), 'C' (Cancelado), 'E'(Entregue) ou 'F' (Finalizado).");
+        }
+        
+        if (Pedido::alterarSituacao($dados['idPedido'], $dados['situacao'])) {
+            return [
+                'sucesso' => true,
+                'mensagem' => 'Situação do pedido modificada com sucesso.'
+            ];
+        } else {
+            throw new Exception("Ocorreu um erro ao alterar a situação na base de dados.");
+        }
+    }
     
 }
