@@ -182,6 +182,12 @@ input:checked + .slider:before {
     width: 100%;
 }
 
+.listagem-dados {
+    overflow-x: auto;
+    width: 100%;
+    display: block;
+}
+
 .cabecalho-dashboard {
     margin-bottom: 1.5rem;
     border-bottom: 2px solid var(--cor-borda);
@@ -235,8 +241,101 @@ input:checked + .slider:before {
     margin-top: auto;
 }
 
-/* --- REGRAS DE MÍDIA PARA TELAS GRANDES (DESKTOP) --- */
-@media (min-width: 768px) {
+.modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal.ativo {
+        display: flex;
+    }
+
+    .modal-conteudo {
+        background-color: var(--cor-secundaria);
+        padding: 2rem;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: var(--sombra);
+        position: relative;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-cabecalho {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--cor-borda);
+        padding-bottom: 0.5rem;
+    }
+
+    .btn-fechar {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--cor-texto);
+    }
+
+    .grupo-form {
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .grupo-form label {
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .grupo-form input, .grupo-form select {
+        padding: 0.75rem;
+        border: 1px solid var(--cor-borda);
+        border-radius: 4px;
+        background-color: var(--cor-fundo);
+        color: var(--cor-texto);
+        font-size: 1rem;
+        width: 100%;
+    }
+
+    .modal-rodape {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-cancelar {
+        background-color: transparent;
+        border: 1px solid var(--cor-borda);
+        color: var(--cor-texto);
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-guardar {
+        background-color: var(--cor-primaria);
+        border: none;
+        color: #ffffff;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    /* --- REGRAS DE MÍDIA PARA TELAS GRANDES (DESKTOP) --- */
+    @media (min-width: 768px) {
     .tema-label {
         display: block;
     }
@@ -256,4 +355,5 @@ input:checked + .slider:before {
     .btn-nav {
         width: auto;
     }
+
 }
