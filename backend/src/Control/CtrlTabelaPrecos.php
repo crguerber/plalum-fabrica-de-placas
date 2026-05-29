@@ -14,13 +14,13 @@ class CtrlTabelaPrecos {
     public function manterTabelaPrecos($dados) {
         
         // Validação da presença dos campos obrigatórios
-        if (empty($dados['dataVigencia']) || !isset($dados['precoMaterial']) || !isset($dados['precoLetra'])) {
+        if (empty($dados['dataVigencia']) || !isset($dados['preco_material']) || !isset($dados['preco_letra'])) {
             throw new Exception("A data de vigência e os preços do material e da letra são de preenchimento obrigatório.");
         }
         
         // Regra de Negócio: Os preços não podem ser negativos ou nulos
-        if (!is_numeric($dados['precoMaterial']) || $dados['precoMaterial'] <= 0 || 
-            !is_numeric($dados['precoLetra']) || $dados['precoLetra'] <= 0) {
+        if (!is_numeric($dados['preco_material']) || $dados['preco_material'] <= 0 || 
+            !is_numeric($dados['preco_letra']) || $dados['preco_letra'] <= 0) {
             throw new Exception("Os preços do material e da letra devem ser valores numéricos positivos maiores que zero.");
         }
         
@@ -33,8 +33,8 @@ class CtrlTabelaPrecos {
         // Instanciação da Entidade com os dados validados
         $tabela = new TabelaPrecos(
             $dados['dataVigencia'],
-            $dados['precoMaterial'],
-            $dados['precoLetra']
+            $dados['preco_material'],
+            $dados['preco_letra']
         );
         
         // Chamada do método de persistência
@@ -64,19 +64,19 @@ class CtrlTabelaPrecos {
 
     /*Método para controlar a edição*/
     public function atualizarTabelaPrecos($dados) {
-        if (empty($dados['idTabelaPrecos']) || empty($dados['dataVigencia']) || !isset($dados['precoMaterial']) || !isset($dados['precoLetra'])) {
+        if (empty($dados['idTabelaPrecos']) || empty($dados['dataVigencia']) || !isset($dados['preco_material']) || !isset($dados['preco_letra'])) {
             throw new Exception("O identificador, a data de vigência e os preços são obrigatórios para a atualização.");
         }
         
-        if (!is_numeric($dados['precoMaterial']) || $dados['precoMaterial'] <= 0 || 
-            !is_numeric($dados['precoLetra']) || $dados['precoLetra'] <= 0) {
+        if (!is_numeric($dados['preco_material']) || $dados['preco_material'] <= 0 || 
+            !is_numeric($dados['preco_letra']) || $dados['preco_letra'] <= 0) {
             throw new Exception("Os preços do material e da letra devem ser numéricos e positivos.");
         }
         
         $tabela = new TabelaPrecos(
             $dados['dataVigencia'],
-            $dados['precoMaterial'],
-            $dados['precoLetra']
+            $dados['preco_material'],
+            $dados['preco_letra']
         );
         $tabela->setIdTabelaPrecos($dados['idTabelaPrecos']);
         

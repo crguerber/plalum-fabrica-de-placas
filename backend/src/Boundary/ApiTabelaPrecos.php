@@ -43,7 +43,7 @@ class ApiTabelaPrecos {
                 $dadosJson = file_get_contents("php://input");
                 $dados = json_decode($dadosJson, true);
                 
-                if (isset($dados['precoMaterial'])) {
+                if (isset($dados['preco_material'])) {
                     $resultado = $controladora->atualizarTabelaPrecos($dados);
                 } elseif (isset($dados['ativo'])) {
                     $resultado = $controladora->alterarStatusTabelaPrecos($dados);

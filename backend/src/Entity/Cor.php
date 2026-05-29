@@ -43,29 +43,25 @@ class Cor {
         }
     }
 
-    /*Método para listar*/
+     /*Método para listar cores*/
     public static function listar($filtros = []) {
         try {
             $conexao = Conexao::getConexao();
-            $sql = "SELECT idCor, nome, tipo FROM Cor WHERE 1=1";
+            $sql = "SELECT * FROM Cor";
             $parametros = [];
 
             if (!empty($filtros['nome'])) {
-                $sql .= " AND nome LIKE ?";
-                $parametros[] = "%" . $filtros['nome'] . "%";
+                $termo = "%" . $filtros['nome'] . "%";
+                $sql .= " WHERE nome LIKE ? OR tipo LIKE ?";
+                $parametros[] = $termo;
+                $parametros[] = $termo;
             }
 
-            if (!empty($filtros['tipo'])) {
-                $sql .= " AND tipo = ?";
-                $parametros[] = $filtros['tipo'];
-            }
-
-            $sql .= " ORDER BY nome ASC";
             $stmt = $conexao->prepare($sql);
             $stmt->execute($parametros);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            throw new Exception("Erro ao buscar as cores: " . $e->getMessage());
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            throw new \Exception("Erro ao consultar o banco de dados: " . $e->getMessage());
         }
     }
 

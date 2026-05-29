@@ -51,21 +51,19 @@ class TabelaPrecos {
     public static function listar($filtros = []) {
         try {
             $conexao = Conexao::getConexao();
-            $sql = "SELECT idTabelaPrecos, dataVigencia, preco_material, preco_letra FROM TabelaPrecos WHERE 1=1";
+            $sql = "SELECT * FROM tabelaprecos";
             $parametros = [];
 
-            // Filtro dinâmico por Data de Vigência
             if (!empty($filtros['dataVigencia'])) {
-                $sql .= " AND dataVigencia = ?";
+                $sql .= " WHERE dataVigencia = ?";
                 $parametros[] = $filtros['dataVigencia'];
             }
 
-            $sql .= " ORDER BY dataVigencia DESC";
             $stmt = $conexao->prepare($sql);
             $stmt->execute($parametros);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            throw new Exception("Erro ao buscar as tabelas de preços: " . $e->getMessage());
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            throw new \Exception("Erro ao consultar o banco de dados: " . $e->getMessage());
         }
     }
 
