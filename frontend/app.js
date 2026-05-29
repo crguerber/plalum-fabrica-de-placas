@@ -40,6 +40,14 @@ async function carregarVista(vista) {
             if (vista === 'clientes') {
                 listarClientes();
             }
+            if (vista === 'cores') {
+                listarCores();
+            }
+            if (vista === 'tabelaprecos') {
+                listarPrecos();
+            }
+
+            
         } catch (erro) {
             conteudoPrincipal.innerHTML = `<section class="vista-modulo"><p style="color: red;">Erro ao carregar a interface: ${erro.message}</p></section>`;
         }
