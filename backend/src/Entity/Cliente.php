@@ -73,25 +73,21 @@ class Cliente {
     public static function listar($filtros = []) {
         try {
             $conexao = Conexao::getConexao();
-            $sql = "SELECT idCliente, nome, cpf, telefone, email FROM Cliente WHERE 1=1";
+            $sql = "SELECT * FROM Cliente";
             $parametros = [];
 
             if (!empty($filtros['nome'])) {
-                $sql .= " AND nome LIKE ?";
-                $parametros[] = "%" . $filtros['nome'] . "%";
+                $termo = "%" . $filtros['nome'] . "%";
+                $sql .= " WHERE nome LIKE ? OR cpf LIKE ?";
+                $parametros[] = $termo;
+                $parametros[] = $termo;
             }
 
-            if (!empty($filtros['cpf'])) {
-                $sql .= " AND cpf = ?";
-                $parametros[] = $filtros['cpf'];
-            }
-
-            $sql .= " ORDER BY nome ASC";
             $stmt = $conexao->prepare($sql);
             $stmt->execute($parametros);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            throw new Exception("Erro ao buscar os clientes: " . $e->getMessage());
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            throw new \Exception("Erro ao consultar o banco de dados: " . $e->getMessage());
         }
     }
 
@@ -99,8 +95,12 @@ class Cliente {
     public function atualizar() {
         try {
             $conexao = Conexao::getConexao();
+            
+            // O campo 'ativo' foi removido da instrução SQL
             $sql = "UPDATE Cliente SET nome = ?, cpf = ?, telefone = ?, email = ? WHERE idCliente = ?";
             $stmt = $conexao->prepare($sql);
+            
+            // Os parâmetros agora acompanham a ordem rigorosa do SQL
             return $stmt->execute([
                 $this->nome,
                 $this->cpf,
