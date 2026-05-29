@@ -1,16 +1,13 @@
 <section class="vista-modulo">
     <h2>Módulo: Clientes</h2>
-    <div class="acoes-modulo" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: space-between;">
-        <button class="btn-nav" onclick="abrirModalCliente()">Novo Registo</button>
-        <div style="display: flex; gap: 0.5rem; flex: 1; min-width: 280px;">
-            <input type="text" id="termoBusca" placeholder="Buscar por nome ou CPF..." onkeydown="if(event.key === 'Enter') filtrarClientes(); if(event.key === 'Escape') limparFiltro();" style="flex: 1; width: 100%; padding: 0.75rem; border: 1px solid var(--cor-borda); border-radius: 4px; background-color: var(--cor-fundo); color: var(--cor-texto);">
-            <button onclick="filtrarClientes()" style="padding: 0.75rem 1rem; background-color: var(--cor-primaria); color: white; border: none; border-radius: 4px; cursor: pointer; white-space: nowrap;">Buscar</button>
-            <button onclick="limparFiltro()" style="padding: 0.75rem 1rem; background-color: transparent; color: var(--cor-texto); border: 1px solid var(--cor-borda); border-radius: 4px; cursor: pointer; white-space: nowrap;">Limpar</button>
+    <div class="acoes-modulo" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+        <button class="btn-nav" onclick="abrirModalCliente()" style="white-space: nowrap; flex-shrink: 0;">Novo Registro</button>
+        <div style="display: flex; gap: 0.5rem; flex: 1 1 250px; min-width: 0;">
+            <input type="text" id="termoBusca" placeholder="Buscar..." onkeydown="if(event.key === 'Enter') filtrarClientes(); if(event.key === 'Escape') limparFiltro();" style="flex: 1; min-width: 0; padding: 0.75rem; border: 1px solid var(--cor-borda); border-radius: 4px; background-color: var(--cor-fundo); color: var(--cor-texto);">
+            <button onclick="filtrarClientes()" style="padding: 0.75rem; background-color: var(--cor-primaria); color: white; border: none; border-radius: 4px; cursor: pointer; white-space: nowrap;">Buscar</button>
+            <button onclick="limparFiltro()" style="padding: 0.75rem; background-color: transparent; color: var(--cor-texto); border: 1px solid var(--cor-borda); border-radius: 4px; cursor: pointer; white-space: nowrap;">Limpar</button>
         </div>
     </div>
-
-
-
     <div id="lista-clientes" class="listagem-dados" style="margin-top: 1.5rem;">
         <p>A carregar dados da API...</p>
     </div>
