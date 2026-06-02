@@ -29,20 +29,14 @@ class ApiPedido {
                 
             } elseif ($metodo === 'GET') {
                 $filtros = [
-                    'idPedido' => $_GET['idPedido'] ?? null,
-                    'idCliente' => $_GET['idCliente'] ?? null,
-                    'situacao' => $_GET['situacao'] ?? null,
-                    'dataInicial' => $_GET['dataInicial'] ?? null,
-                    'dataFinal' => $_GET['dataFinal'] ?? null,
-                    'cpf' => $_GET['cpf'] ?? null,
-                    'nome' => $_GET['nome'] ?? null
+                    'termo' => $_GET['termo'] ?? null
                 ];
                 
                 $resultado = $controladora->buscarTodos($filtros);
                 
                 http_response_code(200);
                 echo json_encode($resultado);
-                
+                            
             } elseif ($metodo === 'PUT') {
                 $dadosJson = file_get_contents("php://input");
                 $dados = json_decode($dadosJson, true);

@@ -59,6 +59,8 @@ class TabelaPrecos {
                 $parametros[] = $filtros['dataVigencia'];
             }
 
+            $sql .= " ORDER BY dataVigencia DESC";
+
             $stmt = $conexao->prepare($sql);
             $stmt->execute($parametros);
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);

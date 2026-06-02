@@ -83,9 +83,11 @@ class CtrlPedido {
                 $itemPedido->inserir($conexao);
             }
             
-            // 3. Atualiza a "capa" do Pedido com o Valor Total exato após somar todas as placas
-            $stmtUpdate = $conexao->prepare("UPDATE Pedido SET valor_total = ? WHERE idPedido = ?");
-            $stmtUpdate->execute([$valorTotalPedido, $idPedido]);
+            // 3. Atualiza a "capa" do Pedido com o Valor Total exato e o Valor do Sinal (50%)
+            $valorSinalCalculado = $valorTotalPedido * 0.50;
+            
+            $stmtUpdate = $conexao->prepare("UPDATE Pedido SET valor_total = ?, valor_sinal = ? WHERE idPedido = ?");
+            $stmtUpdate->execute([$valorTotalPedido, $valorSinalCalculado, $idPedido]);
             
             // CONFIRMA A TRANSAÇÃO: Se o código chegou até aqui sem erros, grava tudo definitivamente
             $conexao->commit();
@@ -95,6 +97,7 @@ class CtrlPedido {
                 'mensagem' => 'Pedido registado com sucesso.',
                 'idPedido' => $idPedido,
                 'valorTotal' => $valorTotalPedido,
+                'valorSinal' => $valorSinalCalculado,
                 'dataEntrega' => $dataEntregaPrevista
             ];
             
@@ -110,13 +113,24 @@ class CtrlPedido {
     /*Método para controlar a consulta*/
     public function buscarTodos($filtros = []) {
         try {
+            // 1. Busca a lista de pedidos (a "capa")
             $pedidos = Pedido::listar($filtros);
+            
+            // 2. Para cada pedido encontrado, busca os seus respetivos itens
+            foreach ($pedidos as $chave => $pedido) {
+                // Utiliza a entidade ItemPedido que acabámos de atualizar
+                $itens = ItemPedido::buscarPorPedido($pedido['idPedido']);
+                
+                // Anexa os itens ao array do pedido atual
+                $pedidos[$chave]['itens'] = $itens;
+            }
+            
             return [
                 'sucesso' => true,
                 'dados' => $pedidos
             ];
         } catch (Exception $e) {
-            throw new Exception("Ocorreu um erro ao listar os pedidos.");
+            throw new Exception("Ocorreu um erro ao listar os pedidos: " . $e->getMessage());
         }
     }
 
@@ -126,9 +140,9 @@ class CtrlPedido {
             throw new Exception("O identificador do pedido e a nova situação são obrigatórios.");
         }
         
-        $situacoesPermitidas = ['A', 'C', 'E', 'F'];
+        $situacoesPermitidas = ['A', 'C', 'E', 'F', 'P'];
         if (!in_array($dados['situacao'], $situacoesPermitidas)) {
-            throw new Exception("A situação deve ser obrigatoriamente 'A' (Aberto), 'C' (Cancelado), 'E'(Entregue) ou 'F' (Finalizado).");
+            throw new Exception("A situação deve ser obrigatoriamente 'A' (Aberto), 'C' (Cancelado), 'E' (Entregue) ou 'F' (Finalizado) ou 'P' (Produção).");
         }
         
         if (Pedido::alterarSituacao($dados['idPedido'], $dados['situacao'])) {

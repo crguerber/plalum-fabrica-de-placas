@@ -42,4 +42,21 @@ class ItemPedido {
             $this->valorCalculado
         ]);
     }
+
+    public static function buscarPorPedido($idPedido) {
+        try {
+            $conexao = Conexao::getConexao();
+            $sql = "SELECT i.*, cp.nome as nomeCorPlaca, cl.nome as nomeCorLetra 
+                    FROM ItemPedido i 
+                    LEFT JOIN cor cp ON i.idCorPlaca = cp.idCor 
+                    LEFT JOIN cor cl ON i.idCorLetra = cl.idCor 
+                    WHERE i.idPedido = ?";
+            
+            $stmt = $conexao->prepare($sql);
+            $stmt->execute([$idPedido]);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            throw new \Exception("Erro ao consultar os itens do pedido: " . $e->getMessage());
+        }
+    }    
 }
