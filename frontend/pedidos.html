@@ -1,0 +1,134 @@
+<div class="acoes-modulo" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+    <button class="btn-nav" onclick="abrirModalPedido()" style="white-space: nowrap; flex-shrink: 0;">Novo Registro</button>
+    <div style="display: flex; gap: 0.5rem; flex: 1 1 250px; min-width: 0;">
+        <input type="text" id="termoBuscaPedido" placeholder="Buscar pedido por Id do Pedido, nome do cliente ou CPF" onkeydown="if(event.key === 'Enter') filtrarPedidos(); if(event.key === 'Escape') limparFiltroPedido();" style="flex: 1; min-width: 0; padding: 0.75rem; border: 1px solid var(--cor-borda); border-radius: 4px; background-color: var(--cor-fundo); color: var(--cor-texto);">
+        <button onclick="filtrarPedidos()" style="padding: 0.75rem; background-color: var(--cor-primaria); color: white; border: none; border-radius: 4px; cursor: pointer; white-space: nowrap;">Buscar</button>
+        <button onclick="limparFiltroPedido()" style="padding: 0.75rem; background-color: transparent; color: var(--cor-texto); border: 1px solid var(--cor-borda); border-radius: 4px; cursor: pointer; white-space: nowrap;">Limpar</button>
+    </div>
+</div>
+
+<div class="listagem-dados" style="overflow-x: auto; width: 100%; display: block;">
+    <div id="lista-pedidos"></div>
+</div>
+
+<div id="modalPedido" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; overflow-y: auto;">
+    <div class="modal-conteudo" style="background-color: var(--cor-fundo); padding: 2rem; border-radius: 8px; width: 95%; max-width: 900px; margin: 2rem auto; max-height: 90vh; overflow-y: auto;">
+        <h2 id="tituloModalPedido" style="margin-bottom: 1.5rem;">Novo Pedido</h2>
+        <form id="formPedido" onsubmit="guardarPedido(event)">
+            <input type="hidden" id="idPedido">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                <div style="flex: 1; min-width: 250px;">
+                    <label for="idCliente" style="display: block; margin-bottom: 0.5rem;">ID Cliente (F2):</label>
+                    <div style="display: flex;">
+                        <input type="number" id="idCliente" required onkeydown="if(event.key === 'F2') { event.preventDefault(); abrirModalBusca('clientes', 'idCliente', ['idCliente', 'nome', 'cpf']); }" style="width: 100%; padding: 0.5rem; border: 1px solid var(--cor-borda); border-radius: 4px 0 0 4px;">
+                        <button type="button" onclick="abrirModalBusca('clientes', 'idCliente', ['idCliente', 'nome', 'cpf'])" style="padding: 0.5rem; background-color: var(--cor-secundaria); border: 1px solid var(--cor-borda); border-left: none; border-radius: 0 4px 4px 0; cursor: pointer;">🔍</button>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <label for="dataPedido" style="display: block; margin-bottom: 0.5rem;">Data do Pedido:</label>
+                    <input type="date" id="dataPedido" required style="width: 100%; padding: 0.5rem; border: 1px solid var(--cor-borda); border-radius: 4px;">
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <label for="dataEntrega" style="display: block; margin-bottom: 0.5rem;">Data de Entrega Prevista:</label>
+                    <input type="text" id="dataEntrega" readonly placeholder="Calculado pelo sistema" style="width: 100%; padding: 0.5rem; border: 1px solid var(--cor-borda); border-radius: 4px; background-color: var(--cor-secundaria); cursor: not-allowed;">
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label for="valorTotal" style="display: block; margin-bottom: 0.5rem;">Valor Total (R$):</label>
+                    <input type="text" id="valorTotal" readonly placeholder="Calculado pelo sistema" style="width: 100%; padding: 0.5rem; border: 1px solid var(--cor-borda); border-radius: 4px; background-color: var(--cor-secundaria); cursor: not-allowed;">
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <label for="valorSinal" style="display: block; margin-bottom: 0.5rem;">Valor Sinal (R$):</label>
+                    <input type="text" id="valorSinal" readonly placeholder="Calculado pelo sistema" style="width: 100%; padding: 0.5rem; border: 1px solid var(--cor-borda); border-radius: 4px; background-color: var(--cor-secundaria); cursor: not-allowed;">
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <label for="situacaoPedido" style="display: block; margin-bottom: 0.5rem;">Situação:</label>
+                    <select id="situacaoPedido" disabled style="width: 100%; padding: 0.5rem; border: 1px solid var(--cor-borda); border-radius: 4px; background-color: var(--cor-secundaria); color: var(--cor-texto); cursor: not-allowed;">
+                        <option value="">Automático...</option>
+                        <option value="A">Aberto</option>
+                        <option value="P">Em Andamento</option>
+                        <option value="C">Cancelado</option>
+                        <option value="E">Entregue</option>
+                        <option value="F">Finalizado</option>
+                    </select>
+                </div>
+            </div>
+            
+            <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--cor-borda); padding-bottom: 0.5rem;">Itens do Pedido</h3>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: flex-end;">
+                <div style="flex: 1; min-width: 110px;">
+                    <div style="flex: 1; min-width: 110px;">
+                        <label style="display: block; font-size: 0.8rem;">ID Preço (F2)</label>
+                        <div style="display: flex;">
+                            <input type="number" id="itemTabela" onkeydown="if(event.key === 'F2') { event.preventDefault(); abrirModalBusca('tabela-precos', 'itemTabela', ['idTabelaPrecos', 'dataVigencia', 'preco_material', 'preco_letra']); }" style="width: 100%; padding: 0.4rem; border: 1px solid var(--cor-borda); border-radius: 4px 0 0 4px;">
+                            <button type="button" onclick="abrirModalBusca('tabela-precos', 'itemTabela', ['idTabelaPrecos', 'dataVigencia', 'preco_material', 'preco_letra'])" style="padding: 0.4rem; background-color: var(--cor-secundaria); border: 1px solid var(--cor-borda); border-left: none; cursor: pointer;">🔍</button>
+                        </div>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 110px;">
+                    <label style="display: block; font-size: 0.8rem;">Cor Placa (F2)</label>
+                    <div style="display: flex;">
+                        <input type="number" id="itemCorPlaca" onkeydown="if(event.key === 'F2') { event.preventDefault(); abrirModalBusca('cores', 'itemCorPlaca', ['idCor', 'nome', 'tipo']); }" style="width: 100%; padding: 0.4rem; border: 1px solid var(--cor-borda); border-radius: 4px 0 0 4px;">
+                        <button type="button" onclick="abrirModalBusca('cores', 'itemCorPlaca', ['idCor', 'nome', 'tipo'])" style="padding: 0.4rem; background-color: var(--cor-secundaria); border: 1px solid var(--cor-borda); border-left: none; cursor: pointer;">🔍</button>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 110px;">
+                    <label style="display: block; font-size: 0.8rem;">Cor Letra (F2)</label>
+                    <div style="display: flex;">
+                        <input type="number" id="itemCorLetra" onkeydown="if(event.key === 'F2') { event.preventDefault(); abrirModalBusca('cores', 'itemCorLetra', ['idCor', 'nome', 'tipo']); }" style="width: 100%; padding: 0.4rem; border: 1px solid var(--cor-borda); border-radius: 4px 0 0 4px;">
+                        <button type="button" onclick="abrirModalBusca('cores', 'itemCorLetra', ['idCor', 'nome', 'tipo'])" style="padding: 0.4rem; background-color: var(--cor-secundaria); border: 1px solid var(--cor-borda); border-left: none; cursor: pointer;">🔍</button>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 70px;">
+                    <label style="display: block; font-size: 0.8rem;">Altura</label>
+                    <input type="number" step="0.01" id="itemAltura" style="width: 100%; padding: 0.4rem;">
+                </div>
+                <div style="flex: 1; min-width: 70px;">
+                    <label style="display: block; font-size: 0.8rem;">Largura</label>
+                    <input type="number" step="0.01" id="itemLargura" style="width: 100%; padding: 0.4rem;">
+                </div>
+                <div style="flex: 2; min-width: 150px;">
+                    <label style="display: block; font-size: 0.8rem;">Frase</label>
+                    <input type="text" id="itemFrase" style="width: 100%; padding: 0.4rem;">
+                </div>
+                <div style="flex: 1; min-width: 90px;">
+                    <label style="display: block; font-size: 0.8rem;">Valor Calc.</label>
+                    <input type="text" id="itemValor" readonly placeholder="Auto" style="width: 100%; padding: 0.4rem; border: 1px solid var(--cor-borda); border-radius: 4px; background-color: var(--cor-secundaria); cursor: not-allowed;">
+                </div>
+                <button type="button" onclick="adicionarItem()" style="padding: 0.5rem; background-color: var(--cor-primaria); color: white; border: none; cursor: pointer; height: fit-content; border-radius: 4px;">Adicionar</button>
+            </div>
+            
+            <div style="overflow-x: auto; margin-bottom: 2rem;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;" id="tabelaItens">
+                    <thead>
+                        <tr style="background-color: var(--cor-secundaria); border-bottom: 2px solid var(--cor-borda); text-align: left;">
+                            <th style="padding: 0.5rem;">Preço</th><th style="padding: 0.5rem;">Cor Placa</th><th style="padding: 0.5rem;">Cor Letra</th><th style="padding: 0.5rem;">Altura</th><th style="padding: 0.5rem;">Largura</th><th style="padding: 0.5rem;">Frase</th><th style="padding: 0.5rem;">Valor</th><th style="padding: 0.5rem;">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoTabelaItens"></tbody>
+                </table>
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button type="button" onclick="fecharModalPedido()" style="padding: 0.5rem 1rem; cursor: pointer; border: 1px solid var(--cor-borda); background: transparent; border-radius: 4px;">Cancelar</button>
+                <button type="submit" class="btn-guardar" style="padding: 0.5rem 1rem; cursor: pointer; background-color: var(--cor-primaria); color: white; border: none; border-radius: 4px;">Guardar Pedido</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="modalBuscaGenerica" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000;">
+    <div class="modal-conteudo" style="background-color: var(--cor-fundo); padding: 2rem; border-radius: 8px; width: 90%; max-width: 600px; max-height: 80vh; display: flex; flex-direction: column;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="margin: 0;">Selecione um Registo</h3>
+            <button type="button" onclick="fecharModalBusca()" style="background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: var(--cor-texto);">&times;</button>
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <input type="text" id="termoBuscaGenerica" placeholder="Filtrar resultados na lista..." onkeyup="filtrarBuscaGenerica()" style="width: 100%; padding: 0.75rem; border: 1px solid var(--cor-borda); border-radius: 4px; background-color: var(--cor-fundo); color: var(--cor-texto);">
+        </div>
+        <div id="conteudoBuscaGenerica" style="overflow-y: auto; flex: 1;">
+            <p>A carregar dados...</p>
+        </div>
+    </div>
+</div>

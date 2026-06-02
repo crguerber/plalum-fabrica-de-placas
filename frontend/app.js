@@ -46,6 +46,9 @@ async function carregarVista(vista) {
             if (vista === 'tabelaprecos') {
                 listarPrecos();
             }
+            if (vista === 'pedidos') {
+                listarPedidos();
+            }            
 
             
         } catch (erro) {
