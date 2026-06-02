@@ -35,6 +35,8 @@ async function listarPedidos(termo = '') {
                     ? `<button onclick="abrirModalPedido(${pedidoJson}, true)" style="padding: 0.25rem 0.5rem; cursor: pointer; border: 1px solid var(--cor-borda); background: var(--cor-secundaria); color: var(--cor-texto); border-radius: 4px;">Consultar</button>`
                     : `<button onclick="abrirModalPedido(${pedidoJson}, false)" style="padding: 0.25rem 0.5rem; cursor: pointer; border: 1px solid var(--cor-borda); background: var(--cor-fundo); color: var(--cor-texto); border-radius: 4px;">Editar</button>`;
                 
+                const botaoStatus = `<button onclick="abrirModalStatus('${pedido.idPedido}', '${pedido.situacao}')" style="padding: 0.25rem 0.5rem; cursor: pointer; border: 1px solid var(--cor-borda); background: var(--cor-primaria); color: white; border-radius: 4px;">Status</button>`;
+                
                 html += `<tr style="border-bottom: 1px solid var(--cor-borda);">`;
                 html += `<td style="padding: 0.5rem;">${pedido.idPedido || '-'}</td>`;
                 html += `<td style="padding: 0.5rem;">${pedido.nomeCliente || '-'}</td>`;
@@ -42,7 +44,7 @@ async function listarPedidos(termo = '') {
                 html += `<td style="padding: 0.5rem;">${pedido.dataPedido || '-'}</td>`;
                 html += `<td style="padding: 0.5rem;">${valorFormatado}</td>`;
                 html += `<td style="padding: 0.5rem;">${pedido.situacao || '-'}</td>`;
-                html += `<td style="padding: 0.5rem; display: flex; gap: 0.5rem;">${botaoAcao}</td>`;
+                html += `<td style="padding: 0.5rem; display: flex; gap: 0.5rem;">${botaoAcao} ${botaoStatus}</td>`;
                 html += `</tr>`;
             });
             html += '</table>';
@@ -70,11 +72,15 @@ function abrirModalPedido(pedido = null, somenteLeitura = false) {
     modoLeituraAtual = somenteLeitura;
     const titulo = document.getElementById('tituloModalPedido');
     const modal = document.getElementById('modalPedido');
+    const displayCliente = document.getElementById('nomeClienteDisplay');
     
     if (pedido) {
         titulo.textContent = somenteLeitura ? 'Consultar Pedido' : 'Editar Pedido';
         document.getElementById('idPedido').value = pedido.idPedido;
         document.getElementById('idCliente').value = pedido.idCliente;
+        
+        displayCliente.textContent = `${pedido.nomeCliente || ''} - CPF: ${pedido.cpfCliente || ''}`;
+        
         document.getElementById('dataPedido').value = pedido.dataPedido;
         
         let dataEntregaFormatada = pedido.data_entrega_prevista || pedido.dataEntregaPrevista;
@@ -103,6 +109,7 @@ function abrirModalPedido(pedido = null, somenteLeitura = false) {
         document.getElementById('valorTotal').value = '';
         document.getElementById('valorSinal').value = '';
         document.getElementById('situacaoPedido').value = '';
+        displayCliente.textContent = '';
     }
     
     renderizarTabelaItens();
@@ -246,6 +253,26 @@ async function guardarPedido(evento) {
             const resultado = JSON.parse(textoBruto);
             if (resultado.sucesso) {
                 alert('Pedido registado com sucesso!');
+                
+                const imprimir = document.getElementById('reciboImprimir').checked;
+                const zap = document.getElementById('reciboZap').checked;
+                const email = document.getElementById('reciboEmail').checked;
+                
+                if (imprimir || zap || email) {
+                    const dadosRecibo = {
+                        idPedido: resultado.idPedido,
+                        dataPedido: document.getElementById('dataPedido').value,
+                        dataEntrega: resultado.dataEntrega,
+                        nomeCliente: document.getElementById('nomeClienteDisplay').textContent,
+                        telefone: document.getElementById('idCliente').dataset.telefone || '',
+                        email: document.getElementById('idCliente').dataset.email || '',
+                        valorTotal: resultado.valorTotal,
+                        valorSinal: resultado.valorSinal,
+                        itens: itensPedidoAtual
+                    };
+                    processarRecibos(dadosRecibo, imprimir, zap, email);
+                }
+                
                 fecharModalPedido();
                 listarPedidos();
             } else {
@@ -335,17 +362,199 @@ function selecionarRegisto(idSelecionado) {
             if (registo.nome) inputDestino.dataset.nome = registo.nome;
             if (registo.preco_material) inputDestino.dataset.preco_material = registo.preco_material;
             if (registo.preco_letra) inputDestino.dataset.preco_letra = registo.preco_letra;
+            if (registo.cpf) inputDestino.dataset.cpf = registo.cpf;
+            if (registo.telefone) inputDestino.dataset.telefone = registo.telefone;
+            if (registo.email) inputDestino.dataset.email = registo.email;
+
+            if (campoDestinoAtual === 'idCliente') {
+                const nomeExibicao = registo.nome || '';
+                const cpfExibicao = registo.cpf || '';
+                document.getElementById('nomeClienteDisplay').textContent = `${nomeExibicao} - CPF: ${cpfExibicao}`;
+            }
         } else {
             inputDestino.dataset.nome = '';
             inputDestino.dataset.preco_material = '';
             inputDestino.dataset.preco_letra = '';
+            inputDestino.dataset.cpf = '';
+            inputDestino.dataset.telefone = '';
+            inputDestino.dataset.email = '';
+            if (campoDestinoAtual === 'idCliente') {
+                document.getElementById('nomeClienteDisplay').textContent = '';
+            }
         }
     }
     fecharModalBusca();
 }
+
 function fecharModalBusca() {
     document.getElementById('modalBuscaGenerica').style.display = 'none';
     campoDestinoAtual = '';
     dadosModalAtual = [];
     colunasModalAtual = [];
+}
+
+function abrirModalStatus(id, situacaoAtual) {
+    document.getElementById('idPedidoStatus').value = id;
+    const select = document.getElementById('novoStatus');
+    select.innerHTML = '';
+    
+    let opcoes = [];
+    if (situacaoAtual === 'A') {
+        opcoes = [{val: 'P', text: 'Em Produção'}, {val: 'F', text: 'Finalizado'}, {val: 'C', text: 'Cancelado'}];
+    } else if (situacaoAtual === 'P') {
+        opcoes = [{val: 'F', text: 'Finalizado'}, {val: 'E', text: 'Entregue'}];
+    } else if (situacaoAtual === 'F') {
+        opcoes = [{val: 'E', text: 'Entregue'}];
+    }
+    
+    if (opcoes.length === 0) {
+        alert('Este pedido já atingiu um estado que não permite novas alterações de situação.');
+        return;
+    }
+    
+    opcoes.forEach(op => {
+        select.innerHTML += `<option value="${op.val}">${op.text}</option>`;
+    });
+    
+    document.getElementById('modalStatusPedido').style.display = 'flex';
+}
+
+function fecharModalStatus() {
+    document.getElementById('modalStatusPedido').style.display = 'none';
+}
+
+async function salvarNovoStatus() {
+    const id = document.getElementById('idPedidoStatus').value;
+    const status = document.getElementById('novoStatus').value;
+    
+    try {
+        const resposta = await fetch(`${API_BASE_URL}/pedidos`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idPedido: id, situacao: status })
+        });
+        
+        const textoBruto = await resposta.text();
+        const resultado = JSON.parse(textoBruto);
+        
+        if (resultado.sucesso) {
+            alert('Situação atualizada com sucesso!');
+            fecharModalStatus();
+            listarPedidos();
+        } else {
+            alert('Erro: ' + resultado.mensagem);
+        }
+    } catch (erro) {
+        alert('Ocorreu um erro de rede ao tentar atualizar o status.');
+    }
+}
+
+function processarRecibos(dados, imprimir, zap, email) {
+    let textoItensSimples = '';
+    let htmlItens = '';
+    
+    dados.itens.forEach(i => {
+        const desc = `Placa (${i.altura}x${i.largura}m) - Frase: "${i.frase}"`;
+        const val = parseFloat(i.valor_calculado || 0).toFixed(2);
+        textoItensSimples += `- 1x ${desc} - R$ ${val}\n`;
+        htmlItens += `<div>1x ${desc} <span style="float:right;">R$ ${val}</span></div>`;
+    });
+
+    const saldo = (parseFloat(dados.valorTotal) - parseFloat(dados.valorSinal)).toFixed(2);
+    const totalFormat = parseFloat(dados.valorTotal).toFixed(2);
+    const sinalFormat = parseFloat(dados.valorSinal).toFixed(2);
+
+    const textoMensagem = 
+        `*RECIBO DE ENCOMENDA*\n` +
+        `Associação de Apoio\n` +
+        `---------------------------\n` +
+        `Pedido Nº: ${dados.idPedido}\n` +
+        `Data: ${dados.dataPedido}\n` +
+        `Previsão de Entrega: ${dados.dataEntrega}\n` +
+        `Cliente: ${dados.nomeCliente}\n` +
+        `---------------------------\n` +
+        `*ITENS DO PEDIDO*\n${textoItensSimples}` +
+        `---------------------------\n` +
+        `Valor Total: R$ ${totalFormat}\n` +
+        `Sinal Pago (50%): R$ ${sinalFormat}\n` +
+        `*Saldo a Pagar: R$ ${saldo}*\n` +
+        `---------------------------\n` +
+        `Obrigado pela preferência!`;
+
+    if (zap && dados.telefone) {
+        const numZap = dados.telefone.replace(/\D/g, ''); // Limpa a formatação do número
+        window.open(`https://wa.me/55${numZap}?text=${encodeURIComponent(textoMensagem)}`, '_blank');
+    } else if (zap && !dados.telefone) {
+        alert("Não foi possível enviar o WhatsApp pois o cliente não possui telefone registado.");
+    }
+
+    if (email && dados.email) {
+        window.open(`mailto:${dados.email}?subject=Recibo de Encomenda Nº ${dados.idPedido}&body=${encodeURIComponent(textoMensagem)}`, '_blank');
+    } else if (email && !dados.email) {
+        alert("Não foi possível enviar o e-mail pois o cliente não possui endereço registado.");
+    }
+
+    if (imprimir) {
+        const divImpressao = document.getElementById('areaImpressaoRecibo');
+        const htmlVia = `
+            <div class="via-recibo">
+                <h2 style="text-align:center; margin: 0 0 10px 0;">RECIBO DE ENCOMENDA</h2>
+                <p><strong>Pedido Nº:</strong> ${dados.idPedido} <span style="float:right;"><strong>Data:</strong> ${dados.dataPedido}</span></p>
+                <p><strong>Cliente:</strong> ${dados.nomeCliente}</p>
+                <p><strong>Previsão de Entrega:</strong> ${dados.dataEntrega}</p>
+                <hr style="border-top: 1px dashed #000;">
+                <div style="margin: 15px 0;">${htmlItens}</div>
+                <hr style="border-top: 1px dashed #000;">
+                <p><strong>Valor Total:</strong> <span style="float:right;">R$ ${totalFormat}</span></p>
+                <p><strong>Sinal Pago (50%):</strong> <span style="float:right;">R$ ${sinalFormat}</span></p>
+                <p><strong>Saldo a Pagar:</strong> <span style="float:right;"><strong>R$ ${saldo}</strong></span></p>
+                <br><br><br>
+                <p style="text-align:center;">____________________________________________________<br>Assinatura do Responsável</p>
+            </div>
+        `;
+        
+        divImpressao.innerHTML = 
+            `<h3 style="text-align:center; font-family: monospace;">VIA DA ASSOCIAÇÃO</h3>` + htmlVia + 
+            `<div style="page-break-before: always; height: 20px;"></div>` +
+            `<h3 style="text-align:center; font-family: monospace;">VIA DO CLIENTE</h3>` + htmlVia;
+        
+        setTimeout(() => { window.print(); }, 500);
+    }
+}
+
+function dispararReciboManual() {
+    const idPedido = document.getElementById('idPedido').value;
+    if (!idPedido) {
+        alert('É necessário guardar o pedido primeiro para que o sistema gere o número do recibo.');
+        return;
+    }
+
+    const imprimir = document.getElementById('reciboImprimir').checked;
+    const zap = document.getElementById('reciboZap').checked;
+    const email = document.getElementById('reciboEmail').checked;
+
+    if (!imprimir && !zap && !email) {
+        alert('Selecione ao menos uma opção de emissão.');
+        return;
+    }
+
+    let total = 0;
+    itensPedidoAtual.forEach(item => {
+        total += parseFloat(item.valor_calculado || 0);
+    });
+    const sinal = total * 0.50;
+
+    const dadosRecibo = {
+        idPedido: idPedido,
+        dataPedido: document.getElementById('dataPedido').value,
+        dataEntrega: document.getElementById('dataEntrega').value || 'A calcular',
+        nomeCliente: document.getElementById('nomeClienteDisplay').textContent,
+        telefone: document.getElementById('idCliente').dataset.telefone || '',
+        email: document.getElementById('idCliente').dataset.email || '',
+        valorTotal: total,
+        valorSinal: sinal,
+        itens: itensPedidoAtual
+    };
+
+    processarRecibos(dadosRecibo, imprimir, zap, email);
 }

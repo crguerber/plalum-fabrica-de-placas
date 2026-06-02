@@ -1,3 +1,22 @@
+<style>
+    @media print {
+        body * { visibility: hidden; }
+        #areaImpressaoRecibo {
+            display: block !important;
+            visibility: visible;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #areaImpressaoRecibo * { visibility: visible; }
+        .via-recibo { border: 1px dashed #000; padding: 20px; margin-bottom: 40px; font-family: monospace; }
+        .modal, .acoes-modulo, .listagem-dados { display: none !important; }
+    }
+</style>
+
 <div class="acoes-modulo" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
     <button class="btn-nav" onclick="abrirModalPedido()" style="white-space: nowrap; flex-shrink: 0;">Novo Registro</button>
     <div style="display: flex; gap: 0.5rem; flex: 1 1 250px; min-width: 0;">
@@ -15,22 +34,26 @@
     <div class="modal-conteudo" style="background-color: var(--cor-fundo); padding: 2rem; border-radius: 8px; width: 95%; max-width: 900px; margin: 2rem auto; max-height: 90vh; overflow-y: auto;">
         <h2 id="tituloModalPedido" style="margin-bottom: 1.5rem;">Novo Pedido</h2>
         <form id="formPedido" onsubmit="guardarPedido(event)">
-            <input type="hidden" id="idPedido">
             <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                <div style="flex: 1; min-width: 250px;">
+                <div style="flex: 0.5; min-width: 100px;">
+                    <label for="idPedido" style="display: block; margin-bottom: 0.5rem;">Nº Pedido:</label>
+                    <input type="text" id="idPedido" readonly placeholder="Auto" style="width: 100%; padding: 0.5rem; border: 1px solid var(--cor-borda); border-radius: 4px; background-color: var(--cor-secundaria); cursor: not-allowed; font-weight: bold;">
+                </div>
+                <div style="flex: 1.5; min-width: 250px;">
                     <label for="idCliente" style="display: block; margin-bottom: 0.5rem;">ID Cliente (F2):</label>
                     <div style="display: flex;">
-                        <input type="number" id="idCliente" required onkeydown="if(event.key === 'F2') { event.preventDefault(); abrirModalBusca('clientes', 'idCliente', ['idCliente', 'nome', 'cpf']); }" style="width: 100%; padding: 0.5rem; border: 1px solid var(--cor-borda); border-radius: 4px 0 0 4px;">
-                        <button type="button" onclick="abrirModalBusca('clientes', 'idCliente', ['idCliente', 'nome', 'cpf'])" style="padding: 0.5rem; background-color: var(--cor-secundaria); border: 1px solid var(--cor-borda); border-left: none; border-radius: 0 4px 4px 0; cursor: pointer;">🔍</button>
+                        <input type="number" id="idCliente" required onkeydown="if(event.key === 'F2') { event.preventDefault(); abrirModalBusca('clientes', 'idCliente', ['idCliente', 'nome', 'cpf', 'telefone', 'email']); }" oninput="document.getElementById('nomeClienteDisplay').textContent = '';" style="width: 100%; padding: 0.5rem; border: 1px solid var(--cor-borda); border-radius: 4px 0 0 4px;">
+                        <button type="button" onclick="abrirModalBusca('clientes', 'idCliente', ['idCliente', 'nome', 'cpf', 'telefone', 'email'])" style="padding: 0.5rem; background-color: var(--cor-secundaria); border: 1px solid var(--cor-borda); border-left: none; border-radius: 0 4px 4px 0; cursor: pointer;">🔍</button>
                     </div>
+                    <div id="nomeClienteDisplay" style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--cor-primaria); font-weight: bold; min-height: 1.2em;"></div>
                 </div>
-                <div style="flex: 1; min-width: 200px;">
+                <div style="flex: 1; min-width: 150px;">
                     <label for="dataPedido" style="display: block; margin-bottom: 0.5rem;">Data do Pedido:</label>
                     <input type="date" id="dataPedido" required style="width: 100%; padding: 0.5rem; border: 1px solid var(--cor-borda); border-radius: 4px;">
                 </div>
-                <div style="flex: 1; min-width: 200px;">
-                    <label for="dataEntrega" style="display: block; margin-bottom: 0.5rem;">Data de Entrega Prevista:</label>
-                    <input type="text" id="dataEntrega" readonly placeholder="Calculado pelo sistema" style="width: 100%; padding: 0.5rem; border: 1px solid var(--cor-borda); border-radius: 4px; background-color: var(--cor-secundaria); cursor: not-allowed;">
+                <div style="flex: 1; min-width: 150px;">
+                    <label for="dataEntrega" style="display: block; margin-bottom: 0.5rem;">Data Prevista:</label>
+                    <input type="text" id="dataEntrega" readonly placeholder="Calculado" style="width: 100%; padding: 0.5rem; border: 1px solid var(--cor-borda); border-radius: 4px; background-color: var(--cor-secundaria); cursor: not-allowed;">
                 </div>
             </div>
             <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
@@ -110,6 +133,18 @@
                 </table>
             </div>
 
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; padding: 1rem; background-color: var(--cor-secundaria); border-radius: 4px; width: 100%; align-items: flex-end; justify-content: space-between;">
+                <div style="flex: 1;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Opções de Emissão de Recibo:</label>
+                    <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <label style="cursor: pointer;"><input type="checkbox" id="reciboImprimir" checked> Imprimir 2 Vias</label>
+                        <label style="cursor: pointer;"><input type="checkbox" id="reciboZap"> WhatsApp</label>
+                        <label style="cursor: pointer;"><input type="checkbox" id="reciboEmail"> E-mail</label>
+                    </div>
+                </div>
+                <button type="button" onclick="dispararReciboManual()" style="padding: 0.5rem 1.5rem; background-color: var(--cor-primaria); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; white-space: nowrap;">📄 Gerar Recibo</button>
+            </div>
+
             <div style="display: flex; gap: 1rem; justify-content: flex-end;">
                 <button type="button" onclick="fecharModalPedido()" style="padding: 0.5rem 1rem; cursor: pointer; border: 1px solid var(--cor-borda); background: transparent; border-radius: 4px;">Cancelar</button>
                 <button type="submit" class="btn-guardar" style="padding: 0.5rem 1rem; cursor: pointer; background-color: var(--cor-primaria); color: white; border: none; border-radius: 4px;">Guardar Pedido</button>
@@ -132,3 +167,21 @@
         </div>
     </div>
 </div>
+
+<div id="modalStatusPedido" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 3000;">
+    <div class="modal-conteudo" style="background-color: var(--cor-fundo); padding: 2rem; border-radius: 8px; width: 90%; max-width: 400px;">
+        <h3 style="margin-bottom: 1.5rem;">Alterar Situação do Pedido</h3>
+        <input type="hidden" id="idPedidoStatus">
+        <div style="margin-bottom: 1.5rem;">
+            <label for="novoStatus" style="display: block; margin-bottom: 0.5rem;">Nova Situação:</label>
+            <select id="novoStatus" style="width: 100%; padding: 0.5rem; border: 1px solid var(--cor-borda); border-radius: 4px; background-color: var(--cor-fundo); color: var(--cor-texto);">
+            </select>
+        </div>
+        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+            <button type="button" onclick="fecharModalStatus()" style="padding: 0.5rem 1rem; cursor: pointer; border: 1px solid var(--cor-borda); background: transparent; border-radius: 4px;">Cancelar</button>
+            <button type="button" onclick="salvarNovoStatus()" style="padding: 0.5rem 1rem; cursor: pointer; background-color: var(--cor-primaria); color: white; border: none; border-radius: 4px;">Guardar Situação</button>
+        </div>
+    </div>
+</div>
+
+<div id="areaImpressaoRecibo" style="display: none;"></div>
