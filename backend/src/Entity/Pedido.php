@@ -83,5 +83,35 @@ class Pedido {
             throw new Exception("Erro ao alterar a situação do pedido: " . $e->getMessage());
         }
     }
+
+    public function atualizar($conexao, $idPedido) {
+        $sql = "UPDATE Pedido SET idCliente = ?, dataPedido = ?, data_entrega_prevista = ?, valor_total = ?, valor_sinal = ? WHERE idPedido = ?";
+        $stmt = $conexao->prepare($sql);
+        return $stmt->execute([
+            $this->idCliente,
+            $this->dataPedido,
+            $this->dataEntregaPrevista,
+            $this->valorTotal,
+            $this->valorSinal,
+            $idPedido
+        ]);
+    }
+
+    public static function contarPlacasPorData($conexao, $data, $idPedidoDesconsiderar = null) {
+        $sql = "SELECT COUNT(*) as total FROM ItemPedido i 
+                INNER JOIN Pedido p ON i.idPedido = p.idPedido 
+                WHERE p.data_entrega_prevista = ? AND p.situacao != 'C'";
+        $parametros = [$data];
+        
+        if ($idPedidoDesconsiderar) {
+            $sql .= " AND p.idPedido != ?";
+            $parametros[] = $idPedidoDesconsiderar;
+        }
+        
+        $stmt = $conexao->prepare($sql);
+        $stmt->execute($parametros);
+        $resultado = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return (int) $resultado['total'];
+    }
     
 }

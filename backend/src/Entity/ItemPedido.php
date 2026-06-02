@@ -43,6 +43,12 @@ class ItemPedido {
         ]);
     }
 
+    public static function excluirPorPedido($conexao, $idPedido) {
+        $sql = "DELETE FROM ItemPedido WHERE idPedido = ?";
+        $stmt = $conexao->prepare($sql);
+        return $stmt->execute([$idPedido]);
+    }
+
     public static function buscarPorPedido($idPedido) {
         try {
             $conexao = Conexao::getConexao();

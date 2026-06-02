@@ -41,15 +41,15 @@ class ApiPedido {
                 $dadosJson = file_get_contents("php://input");
                 $dados = json_decode($dadosJson, true);
                 
-                if (isset($dados['situacao'])) {
+                if (isset($dados['situacao']) && !isset($dados['itens'])) {
                     $resultado = $controladora->alterarSituacaoPedido($dados);
                 } else {
-                    throw new Exception("Apenas a alteração de situação é permitida para os pedidos através desta rota.");
+                    $resultado = $controladora->atualizarPedido($dados);
                 }
                 
                 http_response_code(200);
                 echo json_encode($resultado);
-                
+                            
             } else {
                 http_response_code(405);
                 echo json_encode([
@@ -65,4 +65,7 @@ class ApiPedido {
             ]);
         }
     }
+
+
+    
 }

@@ -22,9 +22,10 @@ class CtrlPedido {
             // INÍCIO DA TRANSAÇÃO: A partir daqui, o MySQL "congela" a gravação 
             $conexao->beginTransaction();
             
-            // Regra de Negócio: O prazo de entrega padrão é de 7 dias a partir de hoje
-            $dataPedido = date('Y-m-d');
-            $dataEntregaPrevista = date('Y-m-d', strtotime('+7 days'));
+            // Regra de Negócio: Cálculo do prazo de entrega
+            $dataPedido = $dados['dataPedido'];
+            $quantidadePlacas = count($dados['itens']);
+            $dataEntregaPrevista = $this->calcularDataEntrega($conexao, $dataPedido, $quantidadePlacas, $dados['idPedido']);
             
             $valorTotalPedido = 0;
             $valorSinal = isset($dados['valorSinal']) ? (float)$dados['valorSinal'] : 0;
@@ -154,5 +155,93 @@ class CtrlPedido {
             throw new Exception("Ocorreu um erro ao alterar a situação na base de dados.");
         }
     }
-    
+
+    //Método de controle de atualização de item pedido:
+    public function atualizarPedido($dados) {
+        if (empty($dados['idPedido']) || empty($dados['idCliente']) || empty($dados['itens']) || !is_array($dados['itens'])) {
+            throw new Exception("O identificador do pedido, o cliente e a lista de placas são obrigatórios para a edição.");
+        }
+        
+        $conexao = Conexao::getConexao();
+        
+        try {
+            $conexao->beginTransaction();
+            
+            $dataPedido = date('Y-m-d');
+            $quantidadePlacas = count($dados['itens']);
+            $dataEntregaPrevista = $this->calcularDataEntrega($conexao, $dataPedido, $quantidadePlacas);
+            
+            $pedido = new Pedido($dados['idCliente'], $dataPedido, $dataEntregaPrevista, 0, 0, 'A');
+            $pedido->atualizar($conexao, $dados['idPedido']);
+            
+            ItemPedido::excluirPorPedido($conexao, $dados['idPedido']);
+            
+            foreach ($dados['itens'] as $item) {
+                $stmtPreco = $conexao->prepare("SELECT preco_material, preco_letra FROM TabelaPrecos WHERE idTabelaPrecos = ?");
+                $stmtPreco->execute([$item['idTabelaPrecos']]);
+                $precos = $stmtPreco->fetch();
+                
+                if (!$precos) {
+                    throw new Exception("Tabela de preços inválida para um dos itens.");
+                }
+                
+                $area = $item['altura'] * $item['largura'];
+                $custoMaterial = $area * $precos['preco_material'];
+                $fraseSemEspacos = str_replace(' ', '', $item['frase']);
+                $custoLetras = strlen($fraseSemEspacos) * $precos['preco_letra'];
+                $valorCalculado = $custoMaterial + $custoLetras;
+                $valorTotalPedido += $valorCalculado;
+                
+                $itemPedido = new ItemPedido(
+                    $dados['idPedido'], $item['idTabelaPrecos'], $item['idCorPlaca'], $item['idCorLetra'], 
+                    $item['altura'], $item['largura'], $item['frase'], $valorCalculado
+                );
+                $itemPedido->inserir($conexao);
+            }
+            
+            $valorSinalCalculado = $valorTotalPedido * 0.50;
+            $stmtUpdate = $conexao->prepare("UPDATE Pedido SET valor_total = ?, valor_sinal = ?, data_entrega_prevista = ? WHERE idPedido = ?");
+            $stmtUpdate->execute([$valorTotalPedido, $valorSinalCalculado, $dataEntregaPrevista, $dados['idPedido']]);
+            
+            $conexao->commit();
+            
+            return [
+                'sucesso' => true,
+                'mensagem' => 'Pedido atualizado com sucesso.',
+                'idPedido' => $dados['idPedido'],
+                'valorTotal' => $valorTotalPedido,
+                'valorSinal' => $valorSinalCalculado
+            ];
+            
+        } catch (Exception $e) {
+            if ($conexao->inTransaction()) {
+                $conexao->rollBack();
+            }
+            throw new Exception("Erro ao processar a atualização do pedido: " . $e->getMessage());
+        }
+    }
+
+    private function calcularDataEntrega($conexao, $dataBase, $quantidadePlacas, $idPedidoAtual = null) {
+        $dataAvaliada = date('Y-m-d', strtotime($dataBase . ' +1 day'));
+        $placasRestantes = $quantidadePlacas;
+
+        while ($placasRestantes > 0) {
+            $placasJaAgendadas = Pedido::contarPlacasPorData($conexao, $dataAvaliada, $idPedidoAtual);
+            $capacidadeLivre = 15 - $placasJaAgendadas;
+
+            if ($capacidadeLivre > 0) {
+                if ($placasRestantes <= $capacidadeLivre) {
+                    $placasRestantes = 0; 
+                } else {
+                    $placasRestantes -= $capacidadeLivre;
+                }
+            }
+            
+            if ($placasRestantes > 0) {
+                $dataAvaliada = date('Y-m-d', strtotime($dataAvaliada . ' +1 day'));
+            }
+        }
+        return $dataAvaliada;
+    }
+        
 }
