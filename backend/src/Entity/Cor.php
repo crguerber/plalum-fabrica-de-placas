@@ -43,7 +43,7 @@ class Cor {
         }
     }
 
-     /*Método para listar cores*/
+     //Método para listar cores
     public static function listar($filtros = []) {
         try {
             $conexao = Conexao::getConexao();
@@ -65,7 +65,7 @@ class Cor {
         }
     }
 
-    /*Método para atualizar*/
+    //Método para atualizar
     public function atualizar() {
         try {
             $conexao = Conexao::getConexao();
@@ -81,7 +81,7 @@ class Cor {
         }
     }
 
-    /*Método para alterar a situação*/
+    //Método para alterar a situação
     public static function alterarStatus($idCor, $ativo) {
         try {
             $conexao = Conexao::getConexao();

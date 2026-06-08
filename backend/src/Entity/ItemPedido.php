@@ -28,6 +28,7 @@ class ItemPedido {
         $this->valorCalculado = $valorCalculado;
     }
 
+    //método para inserir registro a partir do pedido na tabela itempedido
     public function inserir($conexao) {
         $sql = "INSERT INTO ItemPedido (idPedido, idTabelaPrecos, idCorPlaca, idCorLetra, altura, largura, frase, valor_calculado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conexao->prepare($sql);
@@ -43,12 +44,14 @@ class ItemPedido {
         ]);
     }
 
+    //método para excluirpor pedido
     public static function excluirPorPedido($conexao, $idPedido) {
         $sql = "DELETE FROM ItemPedido WHERE idPedido = ?";
         $stmt = $conexao->prepare($sql);
         return $stmt->execute([$idPedido]);
     }
 
+    //método para buscar o pedido
     public static function buscarPorPedido($idPedido) {
         try {
             $conexao = Conexao::getConexao();

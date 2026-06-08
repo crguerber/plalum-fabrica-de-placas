@@ -47,7 +47,7 @@ class TabelaPrecos {
         }
     }
 
-    /*Método para listar*/
+    //Método para listar
     public static function listar($filtros = []) {
         try {
             $conexao = Conexao::getConexao();
@@ -69,7 +69,7 @@ class TabelaPrecos {
         }
     }
 
-    /*Método para editar*/
+    //Método para editar
     public function atualizar() {
         try {
             $conexao = Conexao::getConexao();
@@ -86,7 +86,7 @@ class TabelaPrecos {
         }
     }
 
-    /*Método para altarar situação*/
+    //Método para altarar situação
     public static function alterarStatus($idTabelaPrecos, $ativo) {
         try {
             $conexao = Conexao::getConexao();

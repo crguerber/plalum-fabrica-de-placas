@@ -40,9 +40,8 @@ class Cliente {
     public function setEmail($email) { $this->email = $email; }
     public function setAtivo($ativo) { $this->ativo = $ativo; }
 
-    /**
-     * Método para inserir o cliente na base de dados.
-     */
+    
+    //Método para inserir o cliente na base de dados 
     public function inserir() {
         try {
             $conexao = Conexao::getConexao();
@@ -69,7 +68,7 @@ class Cliente {
         }
     }
 
-    /*Método para listar clientes*/
+    //Método para listar clientes
     public static function listar($filtros = []) {
         try {
             $conexao = Conexao::getConexao();
@@ -91,7 +90,7 @@ class Cliente {
         }
     }
 
-    /*Método para alterar*/
+    //Método para alterar
     public function atualizar() {
         try {
             $conexao = Conexao::getConexao();
@@ -113,7 +112,7 @@ class Cliente {
         }
     }
 
-    /*Método para mudar situação*/
+    //Método para mudar situação
     public static function alterarStatus($idCliente, $ativo) {
         try {
             $conexao = Conexao::getConexao();

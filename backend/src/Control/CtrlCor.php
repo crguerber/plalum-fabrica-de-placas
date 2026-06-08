@@ -34,7 +34,7 @@ class CtrlCor {
         }
     }
 
-    /*Método para controlar a consulta*/
+    //Método para controlar a consulta
     public function buscarTodos($filtros = []) {
         try {
             $cores = Cor::listar($filtros);
@@ -47,7 +47,7 @@ class CtrlCor {
         }
     }
 
-    /*Método para controlar a atualização*/
+    //Método para controlar a atualização
     public function atualizarCor($dados) {
         if (empty($dados['idCor']) || empty($dados['nome']) || empty($dados['tipo'])) {
             throw new Exception("O identificador, o nome e o tipo são obrigatórios para a atualização.");
@@ -74,7 +74,7 @@ class CtrlCor {
         }
     }
 
-    /*Método para controlar a alteração de situação*/
+    //Método para controlar a alteração de situação
     public function alterarStatusCor($dados) {
         if (empty($dados['idCor']) || !isset($dados['ativo'])) {
             throw new Exception("O identificador e o novo status são obrigatórios.");

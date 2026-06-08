@@ -10,9 +10,9 @@ class Conexao {
     // Variável estática para guardar a instância única da conexão
     private static $instancia;
 
-    /**
-     * Método estático que retorna a conexão com o banco de dados.
-     * Utiliza o padrão Singleton para evitar múltiplas conexões abertas.
+    /*
+     Método estático que retorna a conexão com o banco de dados.
+     Utiliza o padrão Singleton para evitar múltiplas conexões abertas.
      */
     public static function getConexao() {
         // Verifica se a conexão já existe; se não, cria uma nova.

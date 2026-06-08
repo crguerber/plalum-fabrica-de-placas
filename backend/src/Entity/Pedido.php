@@ -28,7 +28,7 @@ class Pedido {
     public function getIdPedido() { return $this->idPedido; }
     public function setIdPedido($id) { $this->idPedido = $id; }
 
-    /*Método de inserção de novos*/
+    //Método de inserção de novos
     public function inserir($conexao) {
         $sql = "INSERT INTO Pedido (idCliente, dataPedido, data_entrega_prevista, valor_total, valor_sinal, situacao) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conexao->prepare($sql);
@@ -44,7 +44,7 @@ class Pedido {
         return $this->idPedido;
     }
 
-    /*Método para listar*/
+    //Método para listar
     public static function listar($filtros = []) {
             try {
                 $conexao = Conexao::getConexao();
@@ -72,7 +72,7 @@ class Pedido {
             }
         }
 
-    /*Método para alterar a situação A=Aberta, C=Cancelada, E=Entregue, Finalizado*/
+    //Método para alterar a situação A=Aberta, C=Cancelada, E=Entregue, Finalizado
     public static function alterarSituacao($idPedido, $situacao) {
         try {
             $conexao = Conexao::getConexao();

@@ -14,15 +14,13 @@ class CtrlPedido {
         if (empty($dados['idCliente']) || empty($dados['itens']) || !is_array($dados['itens'])) {
             throw new Exception("O identificador do cliente e a lista de itens (placas) são obrigatórios.");
         }
-
-        // Obtém a ligação única e partilhada
+       
         $conexao = Conexao::getConexao();
         
         try {
-            // INÍCIO DA TRANSAÇÃO: A partir daqui, o MySQL "congela" a gravação 
             $conexao->beginTransaction();
             
-            // Regra de Negócio: Cálculo do prazo de entrega
+            // Regra de Negócio: Cálculo do prazo de entrega (Diagrama de atividades UC003)
             $dataPedido = $dados['dataPedido'];
             $quantidadePlacas = count($dados['itens']);
             $dataEntregaPrevista = $this->calcularDataEntrega($conexao, $dataPedido, $quantidadePlacas, $dados['idPedido']);
@@ -43,7 +41,7 @@ class CtrlPedido {
             // Insere a "capa" do pedido e recupera o ID gerado
             $idPedido = $pedido->inserir($conexao);
             
-            // 2. Processamento matemático de cada placa (Item)
+            // 2. Cálculo do preço de cada placa - Item (Diagrama de Atividades UC004)
             foreach ($dados['itens'] as $item) {
                 // Busca os preços na base de dados para garantir que o utilizador não forja valores
                 $stmtPreco = $conexao->prepare("SELECT preco_material, preco_letra FROM TabelaPrecos WHERE idTabelaPrecos = ?");
@@ -54,16 +52,16 @@ class CtrlPedido {
                     throw new Exception("Tabela de preços inválida para um dos itens.");
                 }
                 
-                // Lógica Matemática: Cálculo da Área (em metros quadrados)
+                // Cálculo da Área (em metros quadrados)
                 $area = $item['altura'] * $item['largura'];
                 $custoMaterial = $area * $precos['preco_material'];
                 
-                // Lógica Matemática: Contagem de caracteres (ignorando os espaços em branco)
+                // Contagem de caracteres (ignorando os espaços em branco)
                 $fraseSemEspacos = str_replace(' ', '', $item['frase']);
                 $quantidadeLetras = strlen($fraseSemEspacos);
                 $custoLetras = $quantidadeLetras * $precos['preco_letra'];
                 
-                // Custo final desta placa específica
+                // Custo final da placa
                 $valorCalculado = $custoMaterial + $custoLetras;
                 
                 // Adiciona ao total da encomenda
@@ -84,13 +82,13 @@ class CtrlPedido {
                 $itemPedido->inserir($conexao);
             }
             
-            // 3. Atualiza a "capa" do Pedido com o Valor Total exato e o Valor do Sinal (50%)
+            // 3. Atualiza o "cabeçalho" do Pedido com o Valor Total e o Valor do Sinal (50%) (Atendendo à regra de negócio UC002)
             $valorSinalCalculado = $valorTotalPedido * 0.50;
             
             $stmtUpdate = $conexao->prepare("UPDATE Pedido SET valor_total = ?, valor_sinal = ? WHERE idPedido = ?");
             $stmtUpdate->execute([$valorTotalPedido, $valorSinalCalculado, $idPedido]);
             
-            // CONFIRMA A TRANSAÇÃO: Se o código chegou até aqui sem erros, grava tudo definitivamente
+            // Se o código chegou até aqui sem erros, grava tudo definitivamente
             $conexao->commit();
             
             return [
@@ -103,7 +101,7 @@ class CtrlPedido {
             ];
             
         } catch (Exception $e) {
-            // ROLLBACK: Se alguma placa der erro, desfaz a gravação do pedido e das outras placas
+            // Se alguma placa der erro, desfaz a gravação do pedido e das outras placas
             if ($conexao->inTransaction()) {
                 $conexao->rollBack();
             }
@@ -111,7 +109,7 @@ class CtrlPedido {
         }
     }
 
-    /*Método para controlar a consulta*/
+    //Método para controlar a consulta
     public function buscarTodos($filtros = []) {
         try {
             // 1. Busca a lista de pedidos (a "capa")
@@ -135,7 +133,7 @@ class CtrlPedido {
         }
     }
 
-    /*Método para controlar a alteração da situação do pedido*/
+    //Método para controlar a alteração da situação do pedido
     public function alterarSituacaoPedido($dados) {
         if (empty($dados['idPedido']) || empty($dados['situacao'])) {
             throw new Exception("O identificador do pedido e a nova situação são obrigatórios.");
@@ -156,7 +154,7 @@ class CtrlPedido {
         }
     }
 
-    //Método de controle de atualização de item pedido:
+    //Método de controle de atualização de item pedido
     public function atualizarPedido($dados) {
         if (empty($dados['idPedido']) || empty($dados['idCliente']) || empty($dados['itens']) || !is_array($dados['itens'])) {
             throw new Exception("O identificador do pedido, o cliente e a lista de placas são obrigatórios para a edição.");

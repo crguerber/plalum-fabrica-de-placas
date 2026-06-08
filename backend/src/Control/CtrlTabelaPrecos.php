@@ -8,9 +8,7 @@ use DateTime;
 
 class CtrlTabelaPrecos {
     
-    /**
-     * Método responsável por contorlar o registo de uma nova tabela de preços.
-     */
+    //Método responsável por contorlar o registo de uma nova tabela de preços.
     public function manterTabelaPrecos($dados) {
         
         // Validação da presença dos campos obrigatórios
@@ -18,13 +16,13 @@ class CtrlTabelaPrecos {
             throw new Exception("A data de vigência e os preços do material e da letra são de preenchimento obrigatório.");
         }
         
-        // Regra de Negócio: Os preços não podem ser negativos ou nulos
+        // Os preços não podem ser negativos ou nulos
         if (!is_numeric($dados['preco_material']) || $dados['preco_material'] <= 0 || 
             !is_numeric($dados['preco_letra']) || $dados['preco_letra'] <= 0) {
             throw new Exception("Os preços do material e da letra devem ser valores numéricos positivos maiores que zero.");
         }
         
-        // Regra de Negócio: Validação do formato exato da data para o MySQL (AAAA-MM-DD)
+        // Validação do formato exato da data para o MySQL (AAAA-MM-DD)
         $data = DateTime::createFromFormat('Y-m-d', $dados['dataVigencia']);
         if (!$data || $data->format('Y-m-d') !== $dados['dataVigencia']) {
             throw new Exception("A data de vigência deve ser submetida no formato válido AAAA-MM-DD.");
@@ -49,7 +47,7 @@ class CtrlTabelaPrecos {
         }
     }
 
-    /*Método para controlar a consulta*/
+    //Método para controlar a consulta
     public function buscarTodos($filtros = []) {
         try {
             $tabelas = TabelaPrecos::listar($filtros);
@@ -62,7 +60,7 @@ class CtrlTabelaPrecos {
         }
     }
 
-    /*Método para controlar a edição*/
+    //Método para controlar a edição
     public function atualizarTabelaPrecos($dados) {
         if (empty($dados['idTabelaPrecos']) || empty($dados['dataVigencia']) || !isset($dados['preco_material']) || !isset($dados['preco_letra'])) {
             throw new Exception("O identificador, a data de vigência e os preços são obrigatórios para a atualização.");
@@ -90,7 +88,7 @@ class CtrlTabelaPrecos {
         }
     }
 
-    /*Método para controlar a alteração da situação*/
+    //Método para controlar a alteração da situação
     public function alterarStatusTabelaPrecos($dados) {
         if (empty($dados['idTabelaPrecos']) || !isset($dados['ativo'])) {
             throw new Exception("O identificador e o novo status são obrigatórios.");

@@ -7,9 +7,7 @@
 
     class CtrlCliente {
         
-        /**
-         * Método responsável controlar o registo de um novo cliente.
-         */
+        //Método responsável controlar o registo de um novo cliente.
         public function manterCliente($dados) {
             
             // Validação primária das Regras de Negócio
@@ -37,7 +35,7 @@
             }
         }
 
-        /*Método para controlar a consulta de clientes*/
+        //Método para controlar a consulta de clientes
         public function buscarTodos($filtros = []) {
             try {
                 $clientes = Cliente::listar($filtros);
@@ -50,7 +48,7 @@
             }
         }
 
-        /*Método para controlar a atualização*/
+        //Método para controlar a atualização
         public function atualizarCliente($dados) {
             if (empty($dados['idCliente']) || empty($dados['nome']) || empty($dados['cpf'])) {
                 throw new Exception("O identificador do cliente, nome e CPF são de preenchimento obrigatório para a atualização.");
@@ -74,7 +72,7 @@
             }
         }
 
-        /*Método para controlar a altearação de situação*/
+        //Método para controlar a altearação de situação
         public function alterarStatusCliente($dados) {
             if (empty($dados['idCliente']) || !isset($dados['ativo'])) {
                 throw new Exception("O identificador do cliente e o novo status são obrigatórios.");
