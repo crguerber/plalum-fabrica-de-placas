@@ -1,17 +1,38 @@
 # Sistema de Gestão Plalum
 
-Este repositório contém o software de exemplo desenvolvido para a Unidade Curricular de **Análise de Sistemas**.
+Sistema desenvolvido para a Unidade Curricular de Análise de Sistemas, utilizando a arquitetura Boundary-Control-Entity (BCE).
 
-O projeto visa a modernização do sistema de gestão de uma fábrica de placas metálicas, substituindo o modelo manual atualmente utilizado.
+## Tecnologias Utilizadas
 
-A aplicação foi estruturada utilizando o padrão arquitetural **Boundary-Control-Entity (BCE)**, com foco em:
+- PHP
+- MySQL
+- HTML5
+- CSS3
+- JavaScript
+- Composer
 
-* Alta coesão
-* Baixo acoplamento
-* Organização arquitetural
-* Facilidade de manutenção e evolução
+## Estrutura do Projeto
 
-Todo o código-fonte serve como uma excelente base de estudo e prática para programadores, combinando fundamentos da Engenharia de Software com a implementação de regras de negócio em um cenário real.
+projeto/
+├── backend/
+├── frontend/
+├── controller/
+├── entity/
+├── boundary/
+├── database/
+└── README.md
+
+# Funcionalidades
+
+Cadastro de clientes
+Cadastro de produtos
+Controle de pedidos
+Gestão de produção
+Relatórios gerenciais
+
+# Licença
+
+MIT License
 
 ---
 
@@ -125,6 +146,22 @@ O projeto segue o padrão **BCE (Boundary-Control-Entity)**:
 Esta separação promove maior organização, reutilização de código e facilidade de manutenção.
 
 ---
+
+# Sistema de Gestão Plalum
+
+Este repositório contém o software de exemplo desenvolvido para a Unidade Curricular de **Análise de Sistemas**.
+
+O projeto visa a modernização do sistema de gestão de uma fábrica de placas metálicas, substituindo o modelo manual atualmente utilizado.
+
+A aplicação foi estruturada utilizando o padrão arquitetural **Boundary-Control-Entity (BCE)**, com foco em:
+
+* Alta coesão
+* Baixo acoplamento
+* Organização arquitetural
+* Facilidade de manutenção e evolução
+
+Todo o código-fonte serve como uma excelente base de estudo e prática para programadores, combinando fundamentos da Engenharia de Software com a implementação de regras de negócio em um cenário real.
+
 
 # Objetivo Acadêmico
 
