@@ -114,7 +114,7 @@ Este comando permite que o PHP mapeie corretamente os namespaces e as classes do
 
 ## 4. Iniciar a API (Back-end)
 
-Abra um terminal apontando para a pasta do back-end e execute:
+Abra um terminal apontando para a pasta do backend e execute:
 
 ```bash
 php -S localhost:8000
@@ -126,7 +126,7 @@ php -S localhost:8000
 
 ## 5. Iniciar a Interface (Front-end)
 
-Abra uma nova janela de terminal apontando para a pasta do front-end e execute:
+Abra uma nova janela de terminal apontando para a pasta do frontend e execute:
 
 ```bash
 php -S localhost:8001
