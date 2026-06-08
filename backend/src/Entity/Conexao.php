@@ -22,7 +22,7 @@ class Conexao {
             $host = 'localhost';
             $dbname = 'plalum_db';
             $usuario = 'root';
-            $senha = 'suasenhalocal'; 
+            $senha = 'core2duo@20153010'; 
             
             try {
                 // Criação da conexão utilizando PDO
