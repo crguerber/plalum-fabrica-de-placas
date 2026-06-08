@@ -14,13 +14,18 @@ Sistema desenvolvido para a Unidade Curricular de Análise de Sistemas, utilizan
 ## Estrutura do Projeto
 
 ```text
-projeto/
+PLALUM-FABRICA-DE-PLACAS/
 ├── backend/
-├── frontend/
-├── controller/
-├── entity/
-├── boundary/
+    ├── src/
+        ├── Boundary/
+        ├── Control/
+        ├── Entity/
+    ├── vendor/
+        ├── composer/
+    ├── composer.json
+    ├── index.php
 ├── database/
+├── frontend/
 └── README.md
 ```
 
