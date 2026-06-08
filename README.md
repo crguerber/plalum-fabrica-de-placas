@@ -13,6 +13,7 @@ Sistema desenvolvido para a Unidade Curricular de Análise de Sistemas, utilizan
 
 ## Estrutura do Projeto
 
+```text
 projeto/
 ├── backend/
 ├── frontend/
@@ -21,6 +22,7 @@ projeto/
 ├── boundary/
 ├── database/
 └── README.md
+```
 
 # Funcionalidades
 
