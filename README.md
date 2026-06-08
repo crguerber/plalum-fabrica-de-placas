@@ -156,6 +156,36 @@ O projeto segue o padrão **BCE (Boundary-Control-Entity)**:
 
 Esta separação promove maior organização, reutilização de código e facilidade de manutenção.
 
+## Arquitetura e Fluxo de Comunicação
+
+A arquitetura do sistema foi concebida com base no padrão **Boundary-Control-Entity (BCE)**, promovendo uma clara separação de responsabilidades entre as camadas da aplicação.
+
+### Fluxo de Execução
+
+1. A **interface gráfica** executada no navegador atua como a primeira camada de fronteira (*Boundary*), capturando as ações realizadas pelo utilizador e enviando requisições HTTP contendo dados no formato JSON através de chamadas assíncronas.
+
+2. No servidor, a **API REST** assume o papel de fronteira técnica, recebendo as requisições, interpretando os verbos HTTP e encaminhando os dados processados para a controladora responsável pelo caso de uso solicitado.
+
+3. A camada **Control** passa a coordenar toda a operação, validando os dados recebidos, aplicando as regras de negócio e executando os cálculos necessários, como processamento de datas, valores e demais validações do domínio. Esta camada não realiza acesso direto à base de dados.
+
+4. Para operações de persistência e recuperação de informações, a controladora invoca as classes da camada **Entity**, responsáveis pelo mapeamento estrutural dos dados e pela comunicação com a base de dados.
+
+5. As entidades instanciam a ligação ao banco de dados, executam as instruções SQL necessárias e retornam os resultados para a camada de controlo.
+
+6. Os dados percorrem o caminho inverso até chegarem novamente à interface gráfica, onde são apresentados ao utilizador.
+
+### Visão Arquitetural
+
+A separação física e lógica das camadas garante:
+
+* Baixo acoplamento entre os componentes;
+* Alta coesão das responsabilidades;
+* Maior facilidade de manutenção;
+* Melhor escalabilidade da aplicação;
+* Facilidade de evolução e testes do sistema.
+
+Veja o diagrama de componentes do projeto que representa as portas de comunicação e as dependências existentes entre as camadas da arquitetura BCE implementada.
+
 ---
 
 # Sistema de Gestão Plalum
