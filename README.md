@@ -65,6 +65,7 @@ Utilize qualquer cliente de sua preferência para administrar o banco de dados, 
 * Beekeeper Studio
 * HeidiSQL
 * phpMyAdmin
+* etc...
 
 ---
 
@@ -78,6 +79,9 @@ Clone o projeto para sua máquina local:
 
 ```bash
 git clone [URL_DO_REPOSITORIO]
+```
+```
+Lembre-se que você pode instalar no Windows o GitHub Desktop para gerenciar seus projetos.
 ```
 
 ---
