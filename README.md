@@ -107,7 +107,7 @@ Este comando permite que o PHP mapeie corretamente os namespaces e as classes do
 
 1. Abra seu cliente MySQL.
 2. Crie uma nova base de dados.
-3. Importe o script SQL disponibilizado no repositório.
+    * Importe o script SQL disponibilizado no repositório no diretório database/.
 4. Configure as credenciais de acesso (usuário e senha) na classe de conexão do projeto.
 
 ---
