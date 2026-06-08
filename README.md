@@ -85,9 +85,8 @@ Clone o projeto para sua máquina local:
 ```bash
 git clone [URL_DO_REPOSITORIO]
 ```
-```
+
 Lembre-se que você pode instalar no Windows o GitHub Desktop para gerenciar seus projetos.
-```
 
 ---
 
@@ -109,6 +108,7 @@ Este comando permite que o PHP mapeie corretamente os namespaces e as classes do
 2. Crie uma nova base de dados.
     * Importe o script SQL disponibilizado no repositório no diretório database/.
 4. Configure as credenciais de acesso (usuário e senha) na classe de conexão do projeto.
+    * Arquivo Conexao.php no diretório entity
 
 ---
 
