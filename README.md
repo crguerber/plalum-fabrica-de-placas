@@ -26,6 +26,7 @@ PLALUM-FABRICA-DE-PLACAS/
     ├── index.php
 ├── database/
 ├── frontend/
+├── docs/
 └── README.md
 ```
 
