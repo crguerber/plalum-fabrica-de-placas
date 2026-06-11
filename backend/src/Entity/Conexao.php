@@ -21,8 +21,8 @@ class Conexao {
             // Credenciais do Banco de Dados
             $host = 'localhost';
             $dbname = 'plalum_db';
-            $usuario = 'root';
-            $senha = 'suasenhaaqui'; 
+            $usuario = 'root'; //O usuário deve ser alterado de acordo com o usuário local que você está usando
+            $senha = 'Ads@2026'; //Essa senha deve ser alterada de acordo com a sua senha local
             
             try {
                 // Criação da conexão utilizando PDO
