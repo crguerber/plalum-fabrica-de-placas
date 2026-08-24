@@ -215,5 +215,6 @@ Este projeto foi desenvolvido com finalidade educacional, servindo como referên
 * Programação Orientada a Objetos
 * Integração PHP + MySQL
 * Desenvolvimento de aplicações web
+* Implantação de software
 
 ---
