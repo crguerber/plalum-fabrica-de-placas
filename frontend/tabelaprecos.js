@@ -2,7 +2,7 @@ async function listarPrecos(termo = '') {
     const lista = document.getElementById('lista-precos');
     if (!lista) return;
 
-    lista.innerHTML = '<p>A carregar tabela de preços...</p>';
+    lista.innerHTML = '<p>Carregando tabela de preços...</p>';
     
     try {
         const url = termo ? `${API_BASE_URL}/tabela-precos?dataVigencia=${encodeURIComponent(termo)}` : `${API_BASE_URL}/tabela-precos`;

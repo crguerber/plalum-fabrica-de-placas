@@ -5,7 +5,7 @@ async function listarPedidos(termo = '') {
     const lista = document.getElementById('lista-pedidos');
     if (!lista) return;
 
-    lista.innerHTML = '<p>A carregar pedidos...</p>';
+    lista.innerHTML = '<p>Carregando pedidos...</p>';
     
     try {
         const url = termo ? `${API_BASE_URL}/pedidos?termo=${encodeURIComponent(termo)}` : `${API_BASE_URL}/pedidos`;
@@ -300,7 +300,7 @@ async function abrirModalBusca(entidade, campoDestino, colunas) {
     document.getElementById('termoBuscaGenerica').value = '';
     
     modal.style.display = 'flex';
-    conteudo.innerHTML = '<p>A carregar dados...</p>';
+    conteudo.innerHTML = '<p>Carregando dados...</p>';
 
     try {
         const resposta = await fetch(`${API_BASE_URL}/${entidade}`);

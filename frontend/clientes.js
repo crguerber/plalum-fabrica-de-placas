@@ -2,7 +2,7 @@ async function listarClientes(termo = '') {
     const lista = document.getElementById('lista-clientes');
     if (!lista) return;
 
-    lista.innerHTML = '<p>A carregar clientes...</p>';
+    lista.innerHTML = '<p>Carregando clientes...</p>';
     
     try {
         const url = termo ? `${API_BASE_URL}/clientes?nome=${encodeURIComponent(termo)}&cpf=${encodeURIComponent(termo)}` : `${API_BASE_URL}/clientes`;
