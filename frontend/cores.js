@@ -2,7 +2,7 @@ async function listarCores(termo = '') {
     const lista = document.getElementById('lista-cores');
     if (!lista) return;
 
-    lista.innerHTML = '<p>A carregar cores...</p>';
+    lista.innerHTML = '<p>Carregando cores...</p>';
     
     try {
         const url = termo ? `${API_BASE_URL}/cores?nome=${encodeURIComponent(termo)}` : `${API_BASE_URL}/cores`;
