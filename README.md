@@ -93,7 +93,7 @@ Lembre-se que você pode instalar no Windows o GitHub Desktop para gerenciar seu
 
 ## 2. Gerar o Autoload das Classes
 
-Acesse a pasta raiz do projeto e execute:
+Acesse a pasta do projeto que contém o arquivo 'composer.json' e execute:
 
 ```bash
 composer dump-autoload
