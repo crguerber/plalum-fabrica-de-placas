@@ -7,10 +7,8 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
-
     exit(0);
 } 
-
 
 // Habilita o carregamento automático de classes do Composer
 require_once __DIR__ . '/vendor/autoload.php';
@@ -19,6 +17,8 @@ use Boundary\ApiCliente;
 use Boundary\ApiTabelaPrecos;
 use Boundary\ApiCor;
 use Boundary\ApiPedido;
+use Boundary\ApiUf;
+use Boundary\ApiCidade;
 
 // Obtém o caminho da URL acessada
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -29,18 +29,24 @@ if (strpos($uri, '/api/clientes') !== false) {
     $apiCliente->processarRequisicao();
 
 } elseif (strpos($uri, '/api/tabela-precos') !== false) {
-    
     $apiTabela = new ApiTabelaPrecos();
     $apiTabela->processarRequisicao();  
     
 } elseif (strpos($uri, '/api/cores') !== false) {
-    
     $apiCor = new ApiCor();
     $apiCor->processarRequisicao();
 
 } elseif (strpos($uri, '/api/pedidos') !== false) {
     $apiPedido = new ApiPedido();
     $apiPedido->processarRequisicao();
+
+} elseif (strpos($uri, '/api/ufs') !== false) {
+    $apiUf = new ApiUf();
+    $apiUf->processarRequisicao();
+
+} elseif (strpos($uri, '/api/cidades') !== false) {
+    $apiCidade = new ApiCidade();
+    $apiCidade->processarRequisicao();
 
 } else {
     // Rota não encontrada
