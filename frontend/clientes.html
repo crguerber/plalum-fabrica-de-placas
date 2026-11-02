@@ -14,30 +14,78 @@
 </section>
 
 <div id="modalCliente" class="modal">
-    <div class="modal-conteudo">
+    <div class="modal-conteudo" style="max-width: 800px;">
         <div class="modal-cabecalho">
             <h3 id="tituloModalCliente">Novo Cliente</h3>            
             <button class="btn-fechar" onclick="fecharModalCliente()">&times;</button>
         </div>
         <form id="formCliente" onsubmit="guardarCliente(event)">
             <input type="hidden" id="idCliente">
-            <div class="grupo-form">
-                <label for="nomeCliente">Nome Completo</label>
-                <input type="text" id="nomeCliente" required>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="grupo-form">
+                    <label for="nomeCliente">Nome Completo</label>
+                    <input type="text" id="nomeCliente" required>
+                </div>
+                <div class="grupo-form">
+                    <label for="cpfCliente">CPF / CNPJ</label>
+                    <input type="text" id="cpfCliente" required>
+                </div>
+                <div class="grupo-form">
+                    <label for="tipoCliente">Tipo de Cliente</label>
+                    <select id="tipoCliente">
+                        <option value="">Selecione...</option>
+                        <option value="Fisica">Pessoa Física</option>
+                        <option value="Juridica">Pessoa Jurídica</option>
+                    </select>
+                </div>
+                <div class="grupo-form">
+                    <label for="telefoneCliente">Telefone</label>
+                    <input type="text" id="telefoneCliente">
+                </div>
+                <div class="grupo-form">
+                    <label for="emailCliente">E-mail</label>
+                    <input type="email" id="emailCliente">
+                </div>
+                <div class="grupo-form">
+                    <label for="cepCliente">CEP</label>
+                    <input type="text" id="cepCliente">
+                </div>
+                <div class="grupo-form">
+                    <label for="ufCliente">Estado (UF)</label>
+                    <select id="ufCliente" onchange="carregarCidades(this.value)" required>
+                        <option value="">Selecione o Estado</option>
+                    </select>
+                </div>
+                <div class="grupo-form">
+                    <label for="cidadeCliente">Cidade</label>
+                    <select id="cidadeCliente" required>
+                        <option value="">Selecione a Cidade</option>
+                    </select>
+                </div>
+                <div class="grupo-form">
+                    <label for="bairroCliente">Bairro</label>
+                    <input type="text" id="bairroCliente">
+                </div>
+                <div class="grupo-form">
+                    <label for="logradouroCliente">Logradouro</label>
+                    <input type="text" id="logradouroCliente">
+                </div>
+                <div class="grupo-form">
+                    <label for="numeroCliente">Número</label>
+                    <input type="text" id="numeroCliente">
+                </div>
+                <div class="grupo-form">
+                    <label for="complementoCliente">Complemento</label>
+                    <input type="text" id="complementoCliente">
+                </div>
             </div>
-            <div class="grupo-form">
-                <label for="cpfCliente">CPF</label>
-                <input type="text" id="cpfCliente" required>
+            <div class="grupo-form" style="margin-top: 1rem;">
+                <label for="observacaoCliente">Observações</label>
+                <textarea id="observacaoCliente" rows="3" style="width: 100%; padding: 0.5rem; border: 1px solid var(--cor-borda); border-radius: 4px;"></textarea>
             </div>
-            <div class="grupo-form">
-                <label for="telefoneCliente">Telefone</label>
-                <input type="text" id="telefoneCliente">
-            </div>
-            <div class="grupo-form">
-                <label for="emailCliente">E-mail</label>
-                <input type="email" id="emailCliente">
-            </div>
-            <div class="modal-rodape">
+
+            <div class="modal-rodape" style="margin-top: 1.5rem;">
                 <button type="button" class="btn-cancelar" onclick="fecharModalCliente()">Cancelar</button>
                 <button type="submit" class="btn-guardar">Guardar</button>
             </div>
