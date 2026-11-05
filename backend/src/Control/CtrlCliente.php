@@ -36,8 +36,8 @@ class CtrlCliente {
     }
 
     public function atualizarCliente($dados) {
-        if (empty($dados['idCliente']) || empty($dados['nome']) || empty($dados['cpf'])) {
-            throw new Exception("O identificador do cliente, nome e CPF são de preenchimento obrigatório para a atualização.");
+        if (empty($dados['idCliente']) || empty($dados['nome']) || empty($dados['cpf']) || empty($dados['cidade_id'])) {
+            throw new Exception("O identificador do cliente, nome, CPF e Cidade são obrigatórios para a atualização.");
         }
         
         $cliente = new Cliente($dados);
