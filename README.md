@@ -2,6 +2,9 @@
 
 Sistema desenvolvido para a Unidade Curricular de Análise de Sistemas, utilizando a arquitetura Boundary-Control-Entity (BCE).
 
+# Versão
+v1.1.0
+
 ## Tecnologias Utilizadas
 
 - PHP
